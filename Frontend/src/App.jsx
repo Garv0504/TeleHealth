@@ -1,4 +1,5 @@
 import './App.css'
+import Navbar from './components/Navbar'
 import VideoCard from './Components/VideoCard'
 import Home from './Pages/Home'
 import Login from './Pages/login'
@@ -14,6 +15,10 @@ function App() {
         {/* <Regist
         {/* <Login/> */}
         {/* <VideoCard/> */}
+        <Navbar/>
+        <Home/>
+        <VideoCard/>
+        <Footer/>
       </div>
     </>
   )
