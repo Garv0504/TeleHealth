@@ -1,20 +1,43 @@
-import './App.css'
-import Navbar from './components/Navbar'
-import VideoCard from './Components/VideoCard'
-import Home from './Pages/Home'
-import Login from './Pages/login'
-import Register from './Pages/Register'
-import Footer from './Components/Footer'
-import { Routes, Route } from 'react-router-dom'
-function App() {
+import "./App.css";
+import Navbar from "./components/Navbar";
+import VideoCard from "./Components/VideoCard";
+import Home from "./Pages/Home";
+import Login from "./Pages/login";
+import Register from "./Pages/Register";
+import Footer from "./Components/Footer";
 
-  return (
-      <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} /> 
-          <Route path="/register" element={<Register />} />
-      </Routes>
-  )
+import { Routes, Route, Navigate } from "react-router-dom";
+import DashboardLayout from "./Components/PatientDashboard/DashboardLayout";
+import MedicalRecords from "./Components/PatientDashboard/pages/MedicalRecords";
+import Appointments from "./Components/PatientDashboard/pages/Appointments";
+import OnlineConsultations from "./Components/PatientDashboard/pages/OnlineConsultations";
+import Feedback from "./Components/PatientDashboard/pages/Feedback";
+import Payments from "./Components/PatientDashboard/pages/Payments";
+import ProfileSettings from "./Components/PatientDashboard/pages/ProfileSettings";
+import ConsultationPage from "./Pages/ConsultationPage";
+
+function App() {
+	return (
+		<Routes>
+			<Route path="/" element={<Home />} />
+			<Route path="/login" element={<Login />} />
+			<Route path="/register" element={<Register />} />
+			<Route path="/consultation/:specialty" element={<ConsultationPage />} />
+
+			<Route path="/patient-dashboard" element={<DashboardLayout />}>
+				<Route
+					index
+					element={<Navigate to="/patient-dashboard/appointments" replace />}
+				/>
+				<Route path="medical-records" element={<MedicalRecords />} />
+				<Route path="appointments" element={<Appointments />} />
+				<Route path="online-consultations" element={<OnlineConsultations />} />
+				<Route path="feedback" element={<Feedback />} />
+				<Route path="payments" element={<Payments />} />
+				<Route path="profile-settings" element={<ProfileSettings />} />
+			</Route>
+		</Routes>
+	);
 }
 
-export default App
+export default App;
