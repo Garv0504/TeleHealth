@@ -15,6 +15,9 @@ connectDB();
 
 // Route files
 const authRoutes = require("./routes/authRoutes");
+const availabilityRoutes = require("./routes/availabilityRoutes");
+const appointmentRoutes = require("./routes/appointmentRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 
@@ -37,7 +40,9 @@ if (process.env.NODE_ENV === "development") {
 
 // Mount routers
 app.use("/api/auth", authRoutes);
-
+app.use("/api/availability", availabilityRoutes);
+app.use("/api/appointments", appointmentRoutes);
+// app.use("/", notificationRoutes);
 // Error handler middleware
 app.use(errorHandler);
 
