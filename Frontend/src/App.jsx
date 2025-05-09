@@ -1,5 +1,5 @@
 import './App.css'
-import Navbar from './components/Navbar'
+import Navbar from './Components/Navbar'
 import VideoCard from './Components/VideoCard'
 import Home from './Pages/Home'
 import Login from './Pages/login'
