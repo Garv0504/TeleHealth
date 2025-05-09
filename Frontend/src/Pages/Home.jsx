@@ -3,7 +3,7 @@ import CategoryCard from "../Components/CategoryCard";
 
 const Home = () => {
 	return (
-		<div className="bg-[#D1E9FE]">
+		<div className="bg-[#D1E9FE] pb-3">
 			<div className="text-center">
 				<p className="text-slate-700 text-lg">Remove Doubts</p>
 				<h1 className="text-4xl md:text-5xl font-bold text-slate-800 mt-2">
