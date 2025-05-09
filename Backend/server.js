@@ -21,14 +21,14 @@ const app = express();
 // Body parser
 app.use(express.json());
 
-// // Cookie parser
-// app.use(cookieParser());
+// Cookie parser
+app.use(cookieParser());
 
-// // Enable CORS
-// app.use(cors());
+// Enable CORS
+app.use(cors());
 
-// // Set security headers
-// app.use(helmet());
+// Set security headers
+app.use(helmet());
 
 // Dev logging middleware
 if (process.env.NODE_ENV === "development") {

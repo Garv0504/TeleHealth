@@ -11,8 +11,15 @@
   },
   "dependencies": {
     "frontend": "file:",
+<<<<<<< HEAD
+=======
+    "@tailwindcss/vite": "^4.1.5",
+    "axios": "^1.9.0",
+    "lucide-react": "^0.508.0",
+>>>>>>> d7789a4d0449dfb2df17d4b3ea42e7b5e2557049
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.0",
     "tailwindcss": "^4.1.5"
   },
   "devDependencies": {
