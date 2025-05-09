@@ -11,8 +11,7 @@ function App() {
       <div>
         {/* <h1>TeleHeath Web App</h1> */}
         {/* <Home/> */}
-        {/* <Register/> */}
-        <Footer/>
+        {/* <Regist
         {/* <Login/> */}
         {/* <VideoCard/> */}
       </div>

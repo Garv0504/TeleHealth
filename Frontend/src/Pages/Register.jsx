@@ -33,7 +33,8 @@ const Register = () => {
       const response = await register(formData);
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
-      navigate('/');
+      
+      navigate('/login');
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {

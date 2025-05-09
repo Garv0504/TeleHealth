@@ -20,18 +20,34 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
     try {
-      const response = await login(formData);
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
+      const response = await axios.post(
+        'http://localhost:5000/api/auth/login',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
       navigate('/');
     } catch (err) {
-      setError(err.message || 'Login failed. Please check your credentials.');
+      if (err.response) {
+        setError(err.response.data.message || 'Login failed. Please try again.');
+      } else if (err.request) {
+        setError('No response from server. Please try again later.');
+      } else {
+        setError('An error occurred. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
