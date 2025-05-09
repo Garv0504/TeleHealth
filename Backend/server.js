@@ -25,7 +25,7 @@ app.use(express.json());
 // app.use(cookieParser());
 
 // // Enable CORS
-// app.use(cors());
+app.use(cors());
 
 // // Set security headers
 // app.use(helmet());
