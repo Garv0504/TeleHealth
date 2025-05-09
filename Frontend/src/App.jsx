@@ -11,14 +11,15 @@ function App() {
     <>
       <div>
         {/* <h1>TeleHeath Web App</h1> */}
-        {/* <Home/> */}
-        {/* <Regist
-        {/* <Login/> */}
-        {/* <VideoCard/> */}
+
         <Navbar/>
         <Home/>
         <VideoCard/>
+        {/* <Home/> */}
+        {/* <Register/> */}
         <Footer/>
+        {/* <Login/> */}
+        {/* <VideoCard/> */}
       </div>
     </>
   )
