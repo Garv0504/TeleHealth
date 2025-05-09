@@ -1,3 +1,4 @@
+import {Link} from 'react-router-dom';
 import { useState } from 'react';
 
 export default function Navbar() {
@@ -41,8 +42,8 @@ export default function Navbar() {
         
         {/* Authentication Buttons */}
         <div className="flex items-center space-x-4">
-          <a href="#" className="text-gray-700 hover:text-blue-900 font-medium">Log in</a>
-          <a href="#" className="bg-blue-900 hover:bg-blue-800 text-white px-5 py-2 rounded-full font-medium transition-colors duration-200">Sign in</a>
+          <Link to="/login" className="text-gray-700 hover:text-blue-900 font-medium">Log in</Link>
+          <Link to="/register" className="bg-blue-900 hover:bg-blue-800 text-white px-5 py-2 rounded-full font-medium transition-colors duration-200">Sign in</Link>
         </div>
       </div>
     </div>

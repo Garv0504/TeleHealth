@@ -10,7 +10,7 @@ const Register = () => {
     lastName: '',
     email: '',
     password: '',
-    role: 'user', // default role
+    role: 'patient', // default role
     isProfileCompleted: false,
   });
   const [error, setError] = useState('');
@@ -164,8 +164,8 @@ const Register = () => {
                 onChange={handleChange}
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
               >
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
+                <option value="user">Patient</option>
+                <option value="admin">Doctor</option>
               </select>
             </div>
 

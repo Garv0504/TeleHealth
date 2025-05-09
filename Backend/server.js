@@ -27,7 +27,7 @@ app.use(express.json());
 // Cookie parser
 app.use(cookieParser());
 
-// Enable CORS
+// // Enable CORS
 app.use(cors());
 
 // Set security headers
