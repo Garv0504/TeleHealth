@@ -42,6 +42,7 @@ if (process.env.NODE_ENV === "development") {
 app.use("/api/auth", authRoutes);
 app.use("/api/availability", availabilityRoutes);
 app.use("/api/appointments", appointmentRoutes);
+
 // app.use("/", notificationRoutes);
 // Error handler middleware
 app.use(errorHandler);
