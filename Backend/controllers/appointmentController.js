@@ -92,7 +92,7 @@ exports.bookAppointment = asyncHandler(async (req, res, next) => {
 		return next(new ErrorResponse("Selected slot is not available", 400));
 	}
 
-	// Check for existing appointments in this slot
+	// Check for exis         ting appointments in this slot
 	const existingAppointment = await Appointment.findOne({
 		doctor: doctorId,
 		date: appointmentDate,
