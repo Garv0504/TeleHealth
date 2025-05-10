@@ -63,7 +63,6 @@ exports.getAvailableSlots = asyncHandler(async (req, res, next) => {
 // @route   POST /api/appointments
 exports.bookAppointment = asyncHandler(async (req, res, next) => {
 	const { doctorId, date, startTime, endTime, reason } = req.body;
-  console.log(req.body)
 	const patientId = req.body.patientId.id;
 
 	// Validate input
@@ -88,7 +87,6 @@ exports.bookAppointment = asyncHandler(async (req, res, next) => {
 		},
 	});
 
-	console.log(availability);
 
 	if (!availability) {
 		return next(new ErrorResponse("Selected slot is not available", 400));
@@ -125,7 +123,6 @@ exports.bookAppointment = asyncHandler(async (req, res, next) => {
 	res.status(201).json({
 		success: true,
 		data: appointment,
-		paymentLink,
 	});
 });
 
