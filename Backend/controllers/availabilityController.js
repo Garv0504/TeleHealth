@@ -47,7 +47,7 @@ exports.setAvailability = asyncHandler(async (req, res, next) => {
 // @route   GET /api/availability
 exports.getAvailability = asyncHandler(async (req, res, next) => {
   console.log(req)
-  const availabilities = await Availability.find({ doctor: req.user.id });
+  const availabilities = await Availability.findAll({});
 
   res.status(200).json({
     success: true,
