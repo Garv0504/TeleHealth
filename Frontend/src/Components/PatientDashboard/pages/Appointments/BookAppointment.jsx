@@ -85,9 +85,9 @@ const BookAppointment = ({ onClose, onSuccess }) => {
       const response = await axios.get(`${ENDPOINTS.availability}/${selectedDoctor.user._id}?date=${formattedDate}`);
       setTimeSlots(response.data.data);
       console.log(response)
-      if (response.data.data.length === 0) {
-        setError('No available slots for this date.');
-      }
+      // if (response.data.data.length === 0) {
+      //   setError('No available slots for this date.');
+      // }
     } catch (err) {
       setError('Failed to load time slots. Please try again.');
       console.error('Error fetching time slots:', err);
@@ -116,7 +116,6 @@ const BookAppointment = ({ onClose, onSuccess }) => {
         endTime: selectedSlot.endTime,
         reason
       };
-      console.log('Appointment Data:', appointmentData);
       
       const token = localStorage.getItem('token');
       const config = {
