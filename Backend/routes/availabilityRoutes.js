@@ -10,6 +10,6 @@ const router = express.Router();
 router
   .route("/")
   .post(protect, authorize("doctor", "admin"), setAvailability)
-  .get(protect, authorize("doctor", "admin", "patient"), getAvailability);
+  .get(getAvailability);
 
 module.exports = router;

@@ -5,8 +5,6 @@ import axios from 'axios';
 
 const BookAppointment = ({ onClose, onSuccess }) => {
   const [step, setStep] = useState(1);
-  const [specialties, setSpecialties] = useState([]);
-  const [selectedSpecialty, setSelectedSpecialty] = useState(null);
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -18,20 +16,13 @@ const BookAppointment = ({ onClose, onSuccess }) => {
   const [reason, setReason] = useState('');
   const navigate = useNavigate();
 
-  // API endpoints based on provided backend routes
-  const API_BASE_URL = 'http://localhost:5000/api/appointment'; // Adjust this based on your backend URL
+  // API endpoints
+  const API_BASE_URL = 'http://localhost:5000/api';
   const ENDPOINTS = {
-    specialties: `${API_BASE_URL}/`,
-    doctors: `${API_BASE_URL}/`,
-    availability: `${API_BASE_URL}/availability`,
-    appointments: `${API_BASE_URL}/`,
-    userAppointments: `${API_BASE_URL}/`
+    doctors: `${API_BASE_URL}/auth/doctors`,
+    availability: `${API_BASE_URL}/appointments/availability`,
+    appointments: `${API_BASE_URL}/appointments/book-appointment`
   };
-
-  // Fetch specialties on component mount
-  useEffect(() => {
-    fetchSpecialties();
-  }, []);
 
   // Generate a week of dates starting from the selected date
   useEffect(() => {
@@ -52,12 +43,10 @@ const BookAppointment = ({ onClose, onSuccess }) => {
     setWeekDates(generateWeekDates());
   }, [selectedDate]);
 
-  // Fetch doctors when specialty is selected
+  // Fetch all doctors on component mount
   useEffect(() => {
-    if (selectedSpecialty) {
-      fetchDoctorsBySpecialty(selectedSpecialty.id);
-    }
-  }, [selectedSpecialty]);
+    fetchAllDoctors();
+  }, []);
 
   // Fetch time slots when doctor and date are selected
   useEffect(() => {
@@ -66,30 +55,16 @@ const BookAppointment = ({ onClose, onSuccess }) => {
     }
   }, [selectedDoctor, selectedDate]);
 
-  // Fetch all specialties
-  const fetchSpecialties = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(ENDPOINTS.specialties);
-      setSpecialties(response.data);
-    } catch (err) {
-      setError('Failed to load specialties. Please try again.');
-      console.error('Error fetching specialties:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch doctors by specialty ID
-  const fetchDoctorsBySpecialty = async (specialtyId) => {
+  // Fetch all doctors
+  const fetchAllDoctors = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      const response = await axios.get(`${ENDPOINTS.doctors}?specialtyId=${specialtyId}`);
+      const response = await axios.get(ENDPOINTS.doctors);
       setDoctors(response.data);
       if (response.data.length === 0) {
-        setError('No doctors available for this specialty.');
+        setError('No doctors available.');
       }
     } catch (err) {
       setError('Failed to load doctors. Please try again.');
@@ -107,10 +82,10 @@ const BookAppointment = ({ onClose, onSuccess }) => {
     
     try {
       const formattedDate = selectedDate.toISOString().split('T')[0];
-      // Using the availability endpoint with doctorId as path parameter
-      const response = await axios.get(`${ENDPOINTS.availability}/${selectedDoctor.id}?date=${formattedDate}`);
-      setTimeSlots(response.data);
-      if (response.data.length === 0) {
+      const response = await axios.get(`${ENDPOINTS.availability}/${selectedDoctor.user._id}?date=${formattedDate}`);
+      setTimeSlots(response.data.data);
+      console.log(response)
+      if (response.data.data.length === 0) {
         setError('No available slots for this date.');
       }
     } catch (err) {
@@ -122,7 +97,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
     }
   };
 
-  // Book the appointment with backend
+  // Book the appointment
   const handleBookAppointment = async () => {
     if (!selectedDoctor || !selectedSlot || !reason.trim()) {
       setError('Please fill all required fields');
@@ -133,18 +108,17 @@ const BookAppointment = ({ onClose, onSuccess }) => {
     setError(null);
     
     try {
-      // Format data according to your backend requirements
       const appointmentData = {
-        doctorId: selectedDoctor.id,
-        specialtyId: selectedSpecialty.id,
+        patientId : JSON.parse(localStorage.getItem('user')),
+        doctorId: selectedDoctor.user,
         date: selectedDate.toISOString().split('T')[0],
         startTime: selectedSlot.startTime,
         endTime: selectedSlot.endTime,
         reason
       };
+      console.log('Appointment Data:', appointmentData);
       
-      // This endpoint requires authentication (JWT token should be included in headers)
-      const token = localStorage.getItem('token'); // Adjust based on where you store your token
+      const token = localStorage.getItem('token');
       const config = {
         headers: {
           'Content-Type': 'application/json',
@@ -158,13 +132,10 @@ const BookAppointment = ({ onClose, onSuccess }) => {
         onSuccess(response.data);
       }
     } catch (err) {
-      // Handle specific error types from backend
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else if (err.response && err.response.status === 401) {
         setError('Please log in to book an appointment');
-        // Optionally redirect to login page
-        // navigate('/login', { state: { returnUrl: '/appointment' } });
       } else {
         setError('Failed to book appointment. Please try again.');
       }
@@ -175,15 +146,11 @@ const BookAppointment = ({ onClose, onSuccess }) => {
   };
 
   const nextStep = () => {
-    if (step === 1 && !selectedSpecialty) {
-      setError('Please select a specialty');
-      return;
-    }
-    if (step === 2 && !selectedDoctor) {
+    if (step === 1 && !selectedDoctor) {
       setError('Please select a doctor');
       return;
     }
-    if (step === 3 && !selectedSlot) {
+    if (step === 2 && !selectedSlot) {
       setError('Please select a time slot');
       return;
     }
@@ -215,61 +182,27 @@ const BookAppointment = ({ onClose, onSuccess }) => {
            date1.getFullYear() === date2.getFullYear();
   };
 
-  const renderSpecialtySelection = () => {
-    return (
-      <div>
-        <h2 className="text-lg font-medium text-gray-800 mb-4">Select a Specialty</h2>
-        
-        {loading && specialties?.length === 0 ? (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-2 text-gray-500">Loading specialties...</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {specialties?.map((specialty) => (
-              <div 
-                key={specialty.id}
-                className={`p-4 border rounded-lg cursor-pointer transition-all text-center ${
-                  selectedSpecialty?.id === specialty.id 
-                    ? 'border-blue-500 bg-blue-50' 
-                    : 'border-gray-200 hover:border-blue-300'
-                }`}
-                onClick={() => setSelectedSpecialty(specialty)}
-              >
-                <div className="text-2xl mb-2">{specialty.icon}</div>
-                <h3 className="text-sm font-medium">{specialty.name}</h3>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
-
   const renderDoctorSelection = () => {
     return (
       <div>
-        <h2 className="text-lg font-medium text-gray-800 mb-4">
-          Select a {selectedSpecialty?.name} Doctor
-        </h2>
+        <h2 className="text-lg font-medium text-gray-800 mb-4">Select a Doctor</h2>
         
         {loading ? (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
             <p className="mt-2 text-gray-500">Loading doctors...</p>
           </div>
-        ) : doctors?.length === 0 ? (
+        ) : doctors.length === 0 ? (
           <div className="text-center py-8 bg-gray-50 rounded-lg">
-            <p className="text-gray-500">No doctors found for this specialty</p>
+            <p className="text-gray-500">No doctors found</p>
           </div>
         ) : (
           <div className="space-y-4">
-            {doctors?.map((doctor) => (
+            {doctors.map((doctor) => (
               <div 
-                key={doctor.id}
+                key={doctor._id}
                 className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                  selectedDoctor?.id === doctor.id 
+                  selectedDoctor?._id === doctor._id 
                     ? 'border-blue-500 bg-blue-50' 
                     : 'border-gray-200 hover:border-blue-300'
                 }`}
@@ -284,12 +217,13 @@ const BookAppointment = ({ onClose, onSuccess }) => {
                     )}
                   </div>
                   <div className="ml-4">
-                    <h3 className="text-lg font-medium text-gray-900">{doctor.name}</h3>
-                    <div className="flex items-center text-sm text-yellow-500 mt-1">
-                      {'★'.repeat(Math.floor(doctor.rating))}
-                      <span className="text-gray-500 ml-1">{doctor.rating}</span>
-                    </div>
-                    <p className="text-sm text-gray-500 mt-1">{doctor.availability}</p>
+                    <h3 className="text-lg font-medium text-gray-900">{doctor.user.firstName}</h3>
+                    {doctor.rating && (
+                      <div className="flex items-center text-sm text-yellow-500 mt-1">
+                        {'★'.repeat(Math.floor(doctor.rating))}
+                        <span className="text-gray-500 ml-1">{doctor.rating}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -306,7 +240,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
     return (
       <div>
         <h2 className="text-lg font-medium text-gray-800 mb-4">
-          Select Date & Time for Dr. {selectedDoctor?.name}
+          Select Date & Time for Dr. {selectedDoctor?.user.firstName}
         </h2>
         
         {/* Date Selection */}
@@ -364,12 +298,12 @@ const BookAppointment = ({ onClose, onSuccess }) => {
             </div>
           ) : (
             <div className="grid grid-cols-3 gap-2">
-              {timeSlots.map((slot) => (
+              {timeSlots?.map((slot) => (
                 <button
-                  key={slot.id}
+                  key={slot._id}
                   disabled={!slot.isAvailable}
                   className={`py-2 px-3 border rounded-md text-sm transition-colors ${
-                    selectedSlot?.id === slot.id
+                    selectedSlot?._id === slot._id
                       ? 'bg-blue-600 text-white border-blue-600'
                       : slot.isAvailable
                         ? 'border-gray-300 hover:border-blue-500'
@@ -378,7 +312,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
                   onClick={() => slot.isAvailable && setSelectedSlot(slot)}
                 >
                   <div className="flex items-center justify-between">
-                    <span>{slot.startTime}</span>
+                    <span>{slot.startTime} - {slot.endTime}</span>
                     <span className="text-xs">
                       {slot.isAvailable ? '✓ Available' : '✕ Booked'}
                     </span>
@@ -399,16 +333,20 @@ const BookAppointment = ({ onClose, onSuccess }) => {
         
         <div className="bg-gray-50 p-4 rounded-lg mb-4">
           <div className="mb-3">
-            <span className="text-sm text-gray-500">Specialty</span>
-            <p className="font-medium">{selectedSpecialty?.name}</p>
-          </div>
-          <div className="mb-3">
             <span className="text-sm text-gray-500">Doctor</span>
             <p className="font-medium">{selectedDoctor?.name}</p>
+            {selectedDoctor?.specialty && (
+              <p className="text-sm text-gray-500">{selectedDoctor.specialty}</p>
+            )}
           </div>
           <div className="mb-3">
             <span className="text-sm text-gray-500">Date</span>
-            <p className="font-medium">{selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
+            <p className="font-medium">{selectedDate.toLocaleDateString('en-US', { 
+              weekday: 'long', 
+              month: 'long', 
+              day: 'numeric', 
+              year: 'numeric' 
+            })}</p>
           </div>
           <div className="mb-3">
             <span className="text-sm text-gray-500">Time</span>
@@ -481,15 +419,8 @@ const BookAppointment = ({ onClose, onSuccess }) => {
           }`}>
             3
           </div>
-          <div className={`flex-1 h-0.5 mx-2 ${step >= 4 ? 'bg-blue-600' : 'bg-gray-300'}`}></div>
-          <div className={`flex items-center justify-center h-8 w-8 rounded-full border-2 ${
-            step >= 4 ? 'bg-blue-600 border-blue-600 text-white' : 'border-gray-300 text-gray-500'
-          }`}>
-            4
-          </div>
         </div>
         <div className="flex justify-between mt-1 text-xs text-gray-500">
-          <span>Specialty</span>
           <span>Doctor</span>
           <span>Schedule</span>
           <span>Confirm</span>
@@ -511,10 +442,9 @@ const BookAppointment = ({ onClose, onSuccess }) => {
           </div>
         )}
         
-        {step === 1 && renderSpecialtySelection()}
-        {step === 2 && renderDoctorSelection()}
-        {step === 3 && renderCalendarSelection()}
-        {step === 4 && renderConfirmation()}
+        {step === 1 && renderDoctorSelection()}
+        {step === 2 && renderCalendarSelection()}
+        {step === 3 && renderConfirmation()}
       </div>
       
       {/* Footer */}
@@ -537,7 +467,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
           </button>
         )}
         
-        {step < 4 ? (
+        {step < 3 ? (
           <button 
             onClick={nextStep}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
