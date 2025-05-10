@@ -1,22 +1,27 @@
 import React from "react";
 import ControlButton from "./ControlButton";
-import { Plus, Minus, Video, Monitor, Settings, MessageCircle } from "lucide-react";
+import {
+	Plus,
+	Minus,
+	Video,
+	Monitor,
+	Settings,
+	MessageCircle,
+} from "lucide-react";
+import docvideo from "../assets/docvideo.avif";
+import profilephoto from "../assets/profilephoto.jpg";
 
 const VideoCard = () => {
 	return (
-		<div className="relative mt-12 px-4 max-w-4xl mx-auto">
-			<div className="bg-white rounded-xl overflow-hidden shadow-lg">
+		<div className="relative mt-12 px-4 max-w-3xl mx-auto h-[600px] -top-64">
+			<div className="bg-white rounded-xl overflow-hidden shadow-lg ">
 				<div className="relative">
-					<img
-						src="/api/placeholder/800/400"
-						alt="Doctor office"
-						className="w-full h-64 object-cover"
-					/>
+					<img src={docvideo} alt="Doctor office" className="w-full h-[500px]" />
 					<div className="absolute bottom-4 left-4 bg-white p-2 rounded-lg shadow flex items-center space-x-2">
 						<img
-							src="/api/placeholder/40/40"
+							src={profilephoto}
 							alt="Doctor"
-							className="w-10 h-10 rounded-full"
+							className="w-10 h-10 object-cover rounded-full"
 						/>
 						<span className="font-medium">Dr. Billal</span>
 					</div>
