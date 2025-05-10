@@ -7,8 +7,6 @@ const asyncHandler = require("../utils/asyncHandler");
 const ErrorResponse = require("../utils/ErrorResponse");
 const moment = require("moment");
 
-
-
 // @desc    Get available slots for doctor on specific date
 // @route   GET /api/appointments/availability/:doctorId
 exports.getAvailableSlots = asyncHandler(async (req, res, next) => {
@@ -115,8 +113,8 @@ exports.bookAppointment = asyncHandler(async (req, res, next) => {
     startTime,
     endTime,
     reason,
-    status: "success",
-    paymentStatus: "success",
+    status: "completed",
+    paymentStatus: "paid",
   });
 
   // Send notifications
@@ -125,7 +123,7 @@ exports.bookAppointment = asyncHandler(async (req, res, next) => {
   res.status(201).json({
     success: true,
     data: appointment,
-    paymentLink,
+    
   });
 });
 
