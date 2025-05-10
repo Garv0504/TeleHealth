@@ -16,7 +16,10 @@ import Payments from "./Components/PatientDashboard/pages/Payments";
 import ProfileSettings from "./Components/PatientDashboard/pages/ProfileSettings";
 import ConsultationPage from "./Pages/ConsultationPage";
 import DoctorRegister from "./Pages/DoctorRegister";
-import BookAppointment from "./Components/PatientDashboard/pages/Appointments/BookAppointment"
+import BookAppointment from "./Components/PatientDashboard/pages/Appointments/BookAppointment";
+import DoctorAppointments from "./Components/DoctorDashboard/pages/DoctorAppointments";
+import DocDashboardLayout from "./Components/DoctorDashboard/DocDashboardLayout";
+import ManageSlots from "./Components/DoctorDashboard/pages/ManageSlots";
 
 function App() {
 	return (
@@ -24,7 +27,7 @@ function App() {
 			<Route path="/" element={<Home />} />
 			<Route path="/login" element={<Login />} />
 			<Route path="/register" element={<Register />} />
-			<Route path="/doctor-register" element={<DoctorRegister/>} />
+			<Route path="/doctor-register" element={<DoctorRegister />} />
 			<Route path="/consultation/:specialty" element={<ConsultationPage />} />
 
 			<Route path="/patient-dashboard" element={<DashboardLayout />}>
@@ -39,9 +42,11 @@ function App() {
 				<Route path="payments" element={<Payments />} />
 				<Route path="profile-settings" element={<ProfileSettings />} />
 				<Route path="book-appointments" element={<BookAppointment />} />
-
 			</Route>
-
+			<Route path="/doctor-dashboard" element={<DocDashboardLayout />}>
+				<Route path="manage-slots" element={<ManageSlots />} />
+				<Route path="appointments" element={<DoctorAppointments />} />
+			</Route>
 		</Routes>
 	);
 }
