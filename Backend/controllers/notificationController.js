@@ -1,6 +1,6 @@
 const Notification = require("../models/Notification");
 const asyncHandler = require("../utils/asyncHandler");
-const ErrorResponse = require("../utils/ErrorResponse ");
+const ErrorResponse = require("../utils/ErrorResponse");
 
 // @desc    Get user notifications
 // @route   GET /api/notifications

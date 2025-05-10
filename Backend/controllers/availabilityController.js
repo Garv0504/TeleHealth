@@ -1,6 +1,6 @@
 const Availability = require("../models/Availability");
 const asyncHandler = require("../utils/asyncHandler");
-const ErrorResponse = require("../utils/ErrorResponse ");
+const ErrorResponse = require("../utils/ErrorResponse");
 
 // @desc    Set doctor availability
 // @route   POST /api/availability
@@ -46,6 +46,7 @@ exports.setAvailability = asyncHandler(async (req, res, next) => {
 // @desc    Get doctor availability
 // @route   GET /api/availability
 exports.getAvailability = asyncHandler(async (req, res, next) => {
+  console.log(req)
   const availabilities = await Availability.find({ doctor: req.user.id });
 
   res.status(200).json({

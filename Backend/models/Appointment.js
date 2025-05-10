@@ -28,7 +28,7 @@ const AppointmentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "confirmed", "completed", "cancelled", "no-show"],
+      enum: ["pending", "confirmed", "completed", "cancelled", "no-show", "success"],
       default: "pending",
     },
     reason: {
@@ -43,11 +43,15 @@ const AppointmentSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["pending", "paid", "refunded"],
+      enum: ["pending", "paid", "refunded", "success"],
       default: "pending",
     },
+    payment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Payment",
+    },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 // Indexes for faster queries

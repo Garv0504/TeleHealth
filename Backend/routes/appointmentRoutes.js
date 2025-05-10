@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get("/availability/:doctorId", getAvailableSlots);
 router.get("/", protect, getUserAppointments);
-router.post("/", protect, authorize("patient", "admin"), bookAppointment);
+router.post("/book-appointment", bookAppointment);
 router.put("/:id/status", protect, updateAppointmentStatus);
 
 module.exports = router;
