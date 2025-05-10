@@ -4,8 +4,10 @@ const {
   sendAppointmentNotification,
 } = require("../services/notificationService");
 const asyncHandler = require("../utils/asyncHandler");
-const ErrorResponse = require("../utils/ErrorResponse ");
+const ErrorResponse = require("../utils/ErrorResponse");
 const moment = require("moment");
+
+
 
 // @desc    Get available slots for doctor on specific date
 // @route   GET /api/appointments/availability/:doctorId
@@ -113,7 +115,8 @@ exports.bookAppointment = asyncHandler(async (req, res, next) => {
     startTime,
     endTime,
     reason,
-    status: "pending",
+    status: "success",
+    paymentStatus: "success",
   });
 
   // Send notifications
@@ -122,6 +125,7 @@ exports.bookAppointment = asyncHandler(async (req, res, next) => {
   res.status(201).json({
     success: true,
     data: appointment,
+    paymentLink,
   });
 });
 

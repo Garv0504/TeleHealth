@@ -2,8 +2,7 @@ const User = require("../models/User");
 const Patient = require("../models/Patients");
 const Doctor = require("../models/Doctor");
 const asyncHandler = require("../utils/asyncHandler");
-const ErrorResponse = require("../utils/ErrorResponse ");
-
+const ErrorResponse = require("../utils/ErrorResponse");
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -100,5 +99,7 @@ exports.getMe = asyncHandler(async (req, res, next) => {
     data: user,
   });
 });
+
+
 
 // // ... (keep other methods the same)

@@ -1,6 +1,6 @@
 const Availability = require("../models/Availability");
 const asyncHandler = require("../utils/asyncHandler");
-const ErrorResponse = require("../utils/ErrorResponse ");
+const ErrorResponse = require("../utils/ErrorResponse");
 
 // @desc    Set doctor availability
 // @route   POST /api/availability
