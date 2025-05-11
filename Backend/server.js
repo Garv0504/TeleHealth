@@ -32,7 +32,12 @@ app.use(express.json());
 app.use(cookieParser());
 
 // // Enable CORS
-app.use(cors());
+const corsOptions = {
+  origin: [process.env.Origin_feild], // Allow your frontend
+  credentials: true, // Allow cookies/headers like Authorization
+};
+
+app.use(cors(corsOptions));
 
 // Set security headers
 app.use(helmet());
