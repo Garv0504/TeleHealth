@@ -48,10 +48,9 @@ Figma design of the TeleHealth Website: [Figma Design](https://www.figma.com/des
 - **Node.js**: JavaScript runtime for server-side code
 
 ### Additional Tools & Libraries
-- **Authentication**: [Specify if you used JWT, Auth0, etc.]
-- **State Management**: [Redux, Context API, etc.]
-- **API Client**: [Axios, Fetch, etc.]
-- **Testing**: [Jest, React Testing Library, etc.]
+- **Authentication**: JWT Webtoken
+- **State Management**: Context API
+- **API Client**: Axios
 
 ## 🚀 Getting Started
 
