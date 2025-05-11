@@ -221,21 +221,24 @@ exports.updateAppointmentStatus = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: appointment });
 });
 
-// @desc    Get user appointments
+// @desc    Get user appointments with populated doctor and patient details
 // @route   GET /api/appointments
 exports.getUserAppointments = asyncHandler(async (req, res, next) => {
   let query = {};
   const { status, startDate, endDate } = req.query;
 
+  // Set base query based on user role
   if (req.user.role === "patient") {
     query.patient = req.user.id;
   } else if (req.user.role === "doctor") {
     query.doctor = req.user.id;
-  } else {
-    query = {}; // Admin can see all
   }
+  // Admin case - no specific filtering needed
 
+  // Add status filter if provided
   if (status) query.status = status;
+
+  // Add date range filter if provided
   if (startDate && endDate) {
     query.date = {
       $gte: new Date(startDate),
@@ -243,122 +246,132 @@ exports.getUserAppointments = asyncHandler(async (req, res, next) => {
     };
   }
 
+  // Fetch appointments with populated data
   const appointments = await Appointment.find(query)
-    .populate(req.user.role === "patient" ? "doctor" : "patient")
+    .populate({
+      path: "patient",
+      select: "user bloodGroup height weight",
+      populate: {
+        path: "user",
+        select:
+          "firstName lastName email phone dateOfBirth gender profilePicture",
+      },
+    })
+    .populate({
+      path: "doctor",
+      select: "user specialty qualifications consultationFee",
+      populate: {
+        path: "user",
+        select: "firstName lastName email phone profilePicture",
+      },
+    })
+    .populate("payment")
     .sort({ date: 1, startTime: 1 });
 
-  res.status(200).json({ success: true, data: appointments });
+  res.status(200).json({
+    success: true,
+    count: appointments.length,
+    data: appointments,
+  });
 });
 
 // @desc    Get appointments by doctor ID (Admin or Doctor only)
 // @route   GET /api/appointments/doctor/:doctorId
-exports.getAppointmentsByDoctorId = asyncHandler(async (req, res, next) => {
-  const { doctorId } = req.params;
+// GET /api/appointments/patient/:patientId
+exports.getAppointmentsByPatient = async (req, res) => {
+  try {
+    const appointments = await Appointment.find({
+      patient: req.params.patientId,
+    })
+      .populate({
+        path: "doctor",
+        populate: { path: "user", select: "firstName lastName email" },
+      })
+      .populate("patient");
 
-  // Only admin or the doctor themselves can access this
-  if (req.user.role !== "admin" && req.user.id !== doctorId) {
-    return next(
-      new ErrorResponse("Not authorized to access these appointments", 403)
-    );
+    res.status(200).json(appointments);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error retrieving patient appointments", error });
   }
-
-  const { status, startDate, endDate } = req.query;
-  const query = { doctor: doctorId };
-
-  if (status) query.status = status;
-  if (startDate && endDate) {
-    query.date = {
-      $gte: new Date(startDate),
-      $lte: new Date(endDate),
-    };
-  }
-
-  const appointments = await Appointment.find(query)
-    .populate("patient", "name email phone")
-    .sort({ date: 1, startTime: 1 });
-
-  res.status(200).json({
-    success: true,
-    count: appointments.length,
-    data: appointments,
-  });
-});
+};
 
 // @desc    Get appointments by patient ID (Admin, Doctor, or Patient themselves)
 // @route   GET /api/appointments/patient/:patientId
-exports.getAppointmentsByPatientId = asyncHandler(async (req, res, next) => {
-  const { patientId } = req.params;
+// exports.getAppointmentsByPatientId = asyncHandler(async (req, res, next) => {
+//   const { patientId } = req.params;
 
-  // Only admin, doctor, or the patient themselves can access this
-  if (req.user.role === "patient" && req.user.id !== patientId) {
-    return next(
-      new ErrorResponse("Not authorized to access these appointments", 403)
-    );
-  }
+//   // Only admin, doctor, or the patient themselves can access this
+//   if (req.user.role === "patient" && req.user.id !== patientId) {
+//     return next(
+//       new ErrorResponse("Not authorized to access these appointments", 403)
+//     );
+//   }
 
-  const { status, startDate, endDate } = req.query;
-  const query = { patient: patientId };
+//   const { status, startDate, endDate } = req.query;
+//   const query = { patient: patientId };
 
-  if (status) query.status = status;
-  if (startDate && endDate) {
-    query.date = {
-      $gte: new Date(startDate),
-      $lte: new Date(endDate),
-    };
-  }
+//   if (status) query.status = status;
+//   if (startDate && endDate) {
+//     query.date = {
+//       $gte: new Date(startDate),
+//       $lte: new Date(endDate),
+//     };
+//   }
 
-  const appointments = await Appointment.find(query)
-    .populate("doctor", "name specialty")
-    .sort({ date: 1, startTime: 1 });
+//   const appointments = await Appointment.find(query)
+//     .populate("doctor", "name specialty")
+//     .sort({ date: 1, startTime: 1 });
 
-  res.status(200).json({
-    success: true,
-    count: appointments.length,
-    data: appointments,
-  });
-});
+//   res.status(200).json({
+//     success: true,
+//     count: appointments.length,
+//     data: appointments,
+//   });
+// });
 
 // @desc    Get appointments by both doctor and patient ID (Admin or the users themselves)
 // @route   GET /api/appointments/doctor/:doctorId/patient/:patientId
-exports.getAppointmentsByDoctorAndPatient = asyncHandler(
-  async (req, res, next) => {
-    const { doctorId, patientId } = req.params;
+// exports.getAppointmentsByDoctorAndPatient = asyncHandler(
+//   async (req, res, next) => {
+//     const { doctorId, patientId } = req.params;
 
-    // Authorization check
-    if (req.user.role === "patient" && req.user.id !== patientId) {
-      return next(
-        new ErrorResponse("Not authorized to access these appointments", 403)
-      );
-    }
-    if (req.user.role === "doctor" && req.user.id !== doctorId) {
-      return next(
-        new ErrorResponse("Not authorized to access these appointments", 403)
-      );
-    }
+//     // Authorization check
+//     if (req.user.role === "patient" && req.user.id !== patientId) {
+//       return next(
+//         new ErrorResponse("Not authorized to access these appointments", 403)
+//       );
+//     }
+//     if (req.user.role === "doctor" && req.user.id !== doctorId) {
+//       return next(
+//         new ErrorResponse("Not authorized to access these appointments", 403)
+//       );
+//     }
 
-    const { status, startDate, endDate } = req.query;
-    const query = {
-      doctor: doctorId,
-      patient: patientId,
-    };
+//     const { status, startDate, endDate } = req.query;
+//     const query = {
+//       doctor: doctorId,
+//       patient: patientId,
+//     };
 
-    if (status) query.status = status;
-    if (startDate && endDate) {
-      query.date = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      };
-    }
+//     if (status) query.status = status;
+//     if (startDate && endDate) {
+//       query.date = {
+//         $gte: new Date(startDate),
+//         $lte: new Date(endDate),
+//       };
+//     }
 
-    const appointments = await Appointment.find(query)
-      .populate("doctor", "name specialty")
-      .populate("patient", "name email phone")
-      .sort({ date: 1, startTime: 1 });
+//     const appointments = await Appointment.find(query)
+//       .populate("doctor", "name specialty")
+//       .populate("patient", "name email phone")
+//       .sort({ date: 1, startTime: 1 });
 
-    res.status(200).json({
-      success: true,
-      count: appointments.length,
-      data: appointments,
-    });
-  }
-);
+//     res.status(200).json({
+//       success: true,
+//       count: appointments.length,
+//       data: appointments,
+//     });
+//   }
+// );

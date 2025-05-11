@@ -5,7 +5,7 @@ const {
   updateAppointmentStatus,
   getUserAppointments,
   getAppointmentsByDoctorId,
-  getAppointmentsByPatientId,
+  getAppointmentsByPatient,
   getAppointmentsByDoctorAndPatient,
 } = require("../controllers/appointmentController");
 const { protect, authorize } = require("../middleware/auth");
@@ -19,12 +19,12 @@ router.put("/:id/status", protect, updateAppointmentStatus);
 
 // Getting the appointment Details for patient and doctor
 
-router.get("/doctor/:doctorId", protect, getAppointmentsByDoctorId);
-router.get("/patient/:patientId", protect, getAppointmentsByPatientId);
-router.get(
-  "/doctor/:doctorId/patient/:patientId",
-  protect,
-  getAppointmentsByDoctorAndPatient
-);
+// router.get("/doctor/:doctorId", protect, getAppointmentsByPatient);
+router.get("/patient/:patientId", protect, getAppointmentsByPatient);
+// router.get(
+//   "/doctor/:doctorId/patient/:patientId",
+//   protect,
+//   getAppointmentsByDoctorAndPatient
+// );
 
 module.exports = router;
