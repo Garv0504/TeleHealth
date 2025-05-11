@@ -1,7 +1,7 @@
 import { MapPin, Phone } from "lucide-react";
 import React from "react";
-import urgentcall from "../assets/urgentcall.jpg";
-import doctorOnlineIcon from "../assets/doctorOnlineIcon.png";
+// import urgentcall from "../../public/urgentcall.png";
+// import doctorOnlineIcon from "../../public/doctorOnlineIcon.png";
 
 export default function HomeCard1() {
 	return (
@@ -24,7 +24,7 @@ export default function HomeCard1() {
 					{/* Image container with floating label */}
 					<div className="relative w-full h-64 md:h-full">
 						<img
-							src={urgentcall}
+							src="./urgentcall.jpg"
 							alt="Doctor consultation"
 							className="w-full h-full object-cover rounded-3xl shadow-lg shadow-cyan-500/50"
 							style={{ boxShadow: "30px 30px 2px rgba(0, 255, 255, 0.3)" }}
@@ -34,7 +34,7 @@ export default function HomeCard1() {
 						<div className="absolute top-7 -left-8 bg-white text-white px-6 py-3 rounded-lg shadow-md">
 							<div className="flex gap-2">
 								<img
-									src={doctorOnlineIcon}
+									src="./doctorOnlineIcon.png"
 									alt="doctor online icon"
 									className="h-7 w-7 -ml-2"
 								/>

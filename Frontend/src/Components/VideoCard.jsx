@@ -8,8 +8,8 @@ import {
 	Settings,
 	MessageCircle,
 } from "lucide-react";
-import docvideo from "../assets/docvideo.avif";
-import profilephoto from "../assets/profilephoto.jpg";
+// import docvideo from "../assets/docvideo.avif";
+// import profilephoto from "../assets/profilephoto.jpg";
 
 const VideoCard = () => {
 	return (
@@ -17,13 +17,13 @@ const VideoCard = () => {
 			<div className="bg-white rounded-xl overflow-hidden shadow-lg ">
 				<div className="relative">
 					<img
-						src={docvideo}
+						src="./docvideo.avif"
 						alt="Doctor office"
 						className="w-full h-[500px]"
 					/>
 					<div className="absolute bottom-4 left-4 bg-white p-2 rounded-lg shadow flex items-center space-x-2">
 						<img
-							src={profilephoto}
+							src="./profilephoto.jpg"
 							alt="Doctor"
 							className="w-10 h-10 object-cover rounded-full"
 						/>

@@ -1,19 +1,19 @@
 import React from "react";
-import doctors from "../assets/doctorwithNurse.png";
-import consultBackground from "../assets/lightBG.jpg";
+// import doctors from "../../public/doctorwithNurse.png";
+// import consultBackground from "../../public/lightBG.jpg";
 
 export default function HomeCard2() {
 	return (
 		<div className="hidden md:block w-[1110px] h-[400px] mx-auto rounded-xl overflow-hidden relative m-10">
 			<img
-				src={consultBackground}
+				src="./lightBG.jpg"
 				alt="background"
 				className="absolute inset-0 w-full  object-cover opacity-30"
 			/>
 			{/* Content */}
 			<div className="relative z-10 p-5 flex gap-12 ">
 				<img
-					src={doctors}
+					src="./doctorwithNurse.png"
 					alt="bunch of doctors"
 					className="relative top-10 h-90 w-auto rounded-lg"
 				/>
