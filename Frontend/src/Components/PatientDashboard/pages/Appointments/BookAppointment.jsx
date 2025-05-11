@@ -196,6 +196,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 				startTime: selectedSlot.startTime,
 				endTime: selectedSlot.endTime,
 				reason,
+        meetingUrl: "https://meet.google.com",
 			};
 
 			const token = localStorage.getItem("token");
