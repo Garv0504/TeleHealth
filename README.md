@@ -1,4 +1,5 @@
-# TeleHealth
+# Telehealth Solution for access to Healthcare from anywhere.
+
 
 ![React](https://img.shields.io/badge/React-Latest-blue)
 ![Vite](https://img.shields.io/badge/Vite-Latest-purple)
