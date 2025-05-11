@@ -62,7 +62,7 @@ exports.getAvailableSlots = asyncHandler(async (req, res, next) => {
 // @desc    Book appointment from available slot
 // @route   POST /api/appointments
 exports.bookAppointment = asyncHandler(async (req, res, next) => {
-  const { doctorId, date, startTime, endTime, reason } = req.body;
+  const { doctorId, date, startTime, endTime, reason, meetingUrl } = req.body;
   const patientId = req.body.patientId.id;
 
   // Validate input
@@ -115,6 +115,7 @@ exports.bookAppointment = asyncHandler(async (req, res, next) => {
     reason,
     status: "completed",
     paymentStatus: "paid",
+    meetingUrl,
   });
 
   await Availability.updateOne(
