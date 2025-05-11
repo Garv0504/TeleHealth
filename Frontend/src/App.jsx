@@ -2,7 +2,7 @@ import "./App.css";
 import Navbar from "./Components/Navbar";
 import VideoCard from "./Components/VideoCard";
 import Home from "./Pages/Home";
-import Login from "./Pages/login";
+import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Footer from "./Components/Footer";
 import { Routes, Route, Navigate } from "react-router-dom";
