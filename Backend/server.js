@@ -18,6 +18,7 @@ const authRoutes = require("./routes/authRoutes");
 const availabilityRoutes = require("./routes/availabilityRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const paymentRoutes = require("./routes/payments");
 
 const app = express();
 
@@ -28,7 +29,12 @@ app.use(express.json());
 app.use(cookieParser());
 
 // // Enable CORS
-app.use(cors());
+const corsOptions = {
+  origin: [process.env.Origin_feild], // Allow your frontend
+  credentials: true, // Allow cookies/headers like Authorization
+};
+
+app.use(cors(corsOptions));
 
 // Set security headers
 app.use(helmet());
@@ -42,6 +48,7 @@ if (process.env.NODE_ENV === "development") {
 app.use("/api/auth", authRoutes);
 app.use("/api/availability", availabilityRoutes);
 app.use("/api/appointments", appointmentRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // app.use("/", notificationRoutes);
 // Error handler middleware

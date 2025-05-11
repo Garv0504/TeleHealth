@@ -1,12 +1,12 @@
 const express = require("express");
 const {
-  getAvailableSlots,
-  bookAppointment,
-  updateAppointmentStatus,
-  getUserAppointments,
-  getAppointmentsByDoctorId,
-  getAppointmentsByPatientId,
-  getAppointmentsByDoctorAndPatient,
+	getAvailableSlots,
+	bookAppointment,
+	updateAppointmentStatus,
+	getUserAppointments,
+	getAppointmentsByDoctorId,
+	getAppointmentsByPatientId,
+	getAppointmentsByDoctorAndPatient,
 } = require("../controllers/appointmentController");
 const { protect, authorize } = require("../middleware/auth");
 
@@ -22,9 +22,9 @@ router.put("/:id/status", protect, updateAppointmentStatus);
 router.get("/doctor/:doctorId", protect, getAppointmentsByDoctorId);
 router.get("/patient/:patientId", protect, getAppointmentsByPatientId);
 router.get(
-  "/doctor/:doctorId/patient/:patientId",
-  protect,
-  getAppointmentsByDoctorAndPatient
+	"/doctor/:doctorId/patient/:patientId",
+	protect,
+	getAppointmentsByDoctorAndPatient
 );
 
 module.exports = router;

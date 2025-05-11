@@ -1,5 +1,6 @@
 const Appointment = require("../models/Appointment");
 const Availability = require("../models/Availability");
+const User = require("../models/User");
 const {
   sendAppointmentNotification,
 } = require("../services/notificationService");
@@ -62,7 +63,7 @@ exports.getAvailableSlots = asyncHandler(async (req, res, next) => {
 // @desc    Book appointment from available slot
 // @route   POST /api/appointments
 exports.bookAppointment = asyncHandler(async (req, res, next) => {
-  const { doctorId, date, startTime, endTime, reason } = req.body;
+  const { doctorId, date, startTime, endTime, reason, meetingUrl } = req.body;
   const patientId = req.body.patientId.id;
 
   // Validate input
@@ -115,6 +116,7 @@ exports.bookAppointment = asyncHandler(async (req, res, next) => {
     reason,
     status: "completed",
     paymentStatus: "paid",
+    meetingUrl,
   });
 
   await Availability.updateOne(
@@ -199,15 +201,15 @@ exports.bookAppointment = asyncHandler(async (req, res, next) => {
   // });
 });
 
-// @desc    Update appointment status
+// @desc       Update    appointment status
 // @route   PUT /api/appointments/:id/status
 exports.updateAppointmentStatus = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const { status } = req.body;
+  const { status, meetingUrl } = req.body;
 
   const appointment = await Appointment.findByIdAndUpdate(
     id,
-    { status },
+    { status, meetingUrl },
     { new: true, runValidators: true }
   ).populate("patient doctor");
 
@@ -220,7 +222,7 @@ exports.updateAppointmentStatus = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: appointment });
 });
 
-// @desc    Get user appointments
+// @desc    Get user appointments with populated doctor and patient details
 // @route   GET /api/appointments
 exports.getUserAppointments = asyncHandler(async (req, res, next) => {
   let query = {};
@@ -272,14 +274,28 @@ exports.getAppointmentsByDoctorId = asyncHandler(async (req, res, next) => {
     };
   }
 
-  const appointments = await Appointment.find(query)
-    .populate("patient", "name email phone")
-    .sort({ date: 1, startTime: 1 });
+  const appointments = await Appointment.find(query).sort({
+    date: 1,
+    startTime: 1,
+  });
+
+  const appointmentsWithPatients = await Promise.all(
+    appointments.map(async (appointment) => {
+      const patient = await User.findById(appointment.patient).select(
+        "firstName lastName email"
+      );
+      // Create a new object with the doctor details added
+      return {
+        ...appointment.toObject(), // Convert Mongoose doc to plain object
+        patient: patient, // Add the populated doctor
+      };
+    })
+  );
 
   res.status(200).json({
     success: true,
     count: appointments.length,
-    data: appointments,
+    data: appointmentsWithPatients,
   });
 });
 
@@ -306,14 +322,30 @@ exports.getAppointmentsByPatientId = asyncHandler(async (req, res, next) => {
     };
   }
 
-  const appointments = await Appointment.find(query)
-    .populate("doctor", "name specialty")
-    .sort({ date: 1, startTime: 1 });
+  const appointments = await Appointment.find(query).sort({
+    date: 1,
+    startTime: 1,
+  });
 
+  const appointmentsWithDoctors = await Promise.all(
+    appointments.map(async (appointment) => {
+      const doctor = await User.findById(appointment.doctor).select(
+        "firstName lastName email"
+      );
+      // Create a new object with the doctor details added
+      return {
+        ...appointment.toObject(), // Convert Mongoose doc to plain object
+        doctor: doctor, // Add the populated doctor
+      };
+    })
+  );
+
+  // console.log(appointmentsWithDoctors);
+  // console.log(appointments);
   res.status(200).json({
     success: true,
     count: appointments.length,
-    data: appointments,
+    data: appointmentsWithDoctors,
   });
 });
 

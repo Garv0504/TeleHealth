@@ -26,6 +26,7 @@
     "mongoose": "^8.14.2",
     "morgan": "^1.10.0",
     "nodemailer": "^7.0.3",
+    "razorpay": "^2.9.6",
     "square": "^35.1.0"
   },
   "devDependencies": {
