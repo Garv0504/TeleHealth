@@ -22,7 +22,7 @@ TeleHealth is a full-stack telemedicine platform that allows patients to seamles
 
 ### 📹 Demo Video
 
-Watch a demonstration of our project's features and functionality: [Demo Video]([https://drive.google.com/file/d/your-video-id-here/view](https://drive.google.com/file/d/1Egs6VzUhPx6BK04zAiFGIqIG_NuZ8Vyj/view))
+Watch a demonstration of our project's features and functionality: [Demo Video](https://drive.google.com/file/d/1Egs6VzUhPx6BK04zAiFGIqIG_NuZ8Vyj/view)
 
 ### 📚 Documentation
 
