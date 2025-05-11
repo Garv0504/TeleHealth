@@ -22,7 +22,7 @@ export default function HomeCard2() {
 						TeleHealth Plus
 					</div>
 					<h2 className="text-5xl font-bold text-blue-950 mb-2 leading-15">
-						Free Online Consultations Starting at $49/month
+						Free Online Consultations Starting at ₹49/month
 					</h2>
 
 					<button className="bg-blue-950 hover:bg-blue-600 text-white h-12 font-bold py-2 px-4 rounded-3xl transition duration-200 mt-10">
