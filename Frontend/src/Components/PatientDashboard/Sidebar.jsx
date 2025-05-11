@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { User, FileText, Calendar, Video, MessageSquare, CreditCard, Settings } from 'lucide-react';
-import patientData from '../../data/patientData';
+import axios from 'axios';
 
 const Sidebar = () => {
+  const [userData, setUserData] = useState([])
   const navItems = [
     { path: '/patient-dashboard/medical-records', name: 'Medical Records', icon: FileText },
     { path: '/patient-dashboard/appointments', name: 'Appointments', icon: Calendar },
@@ -12,6 +13,26 @@ const Sidebar = () => {
     { path: '/patient-dashboard/payments', name: 'Payments', icon: CreditCard },
     { path: '/patient-dashboard/profile-settings', name: 'Profile Settings', icon: Settings },
   ];
+
+  useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const response = await axios.get("http://localhost:5000/api/auth/me", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
+          console.log(response.data.data.user);
+          setUserData(response.data.data.user);
+  
+          // log actual response data
+        } catch (error) {
+          console.error("Error fetching user:", error);
+        }
+      };
+  
+      fetchUser();
+    }, []);
 
   return (
     <div className="flex flex-col h-full bg-white border-r">
@@ -22,8 +43,8 @@ const Sidebar = () => {
             <User size={32} className="text-gray-500" />
           </div>
           <div>
-            <h2 className="font-medium text-gray-800">{patientData.name}</h2>
-            <p className="text-sm text-gray-500">{patientData.phone}</p>
+            <h2 className="font-medium text-gray-800">{userData.firstName} {userData.lastName}</h2>
+            <p className="text-sm text-gray-500">{userData.email}</p>
           </div>
         </div>
       </div>

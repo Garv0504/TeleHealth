@@ -34,7 +34,7 @@ export async function handlepay({ amount, name, email, phone }) {
 						key: import.meta.env.VITE_REACT_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
 						amount: orderResponse.data.amount,
 						currency,
-						name: "Healthcare App",
+						name: "Telehealth",
 						description: `Appointment with ${name}`,
 						order_id: orderResponse.data.id,
 						handler: function (response) {
