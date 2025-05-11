@@ -214,15 +214,6 @@ const Appointment = () => {
 												Join Meeting
 											</a>
 										
-									<button
-										className="inline-flex items-center px-3 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
-										onClick={() => {
-											// Handle view details logic here
-											console.log("View details:", appointment._id);
-										}}
-									>
-										View Details
-									</button>
 								</div>
 							</li>
 						))}
