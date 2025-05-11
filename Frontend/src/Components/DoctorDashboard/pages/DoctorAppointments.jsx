@@ -1,159 +1,245 @@
-import React, { useState } from 'react';
-import { Calendar, Clock, User, FileText, X, Check } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { format } from "date-fns";
 
-const DoctorAppointments = () => {
-  const [activeTab, setActiveTab] = useState('upcoming');
-  
-  const appointments = {
-    upcoming: [
-      { 
-        id: 1, 
-        patientName: 'John Smith', 
-        patientId: 'P12345',
-        date: '2025-05-12', 
-        time: '10:00 AM', 
-        type: 'Check-up',
-        status: 'confirmed'
-      },
-      { 
-        id: 2, 
-        patientName: 'Emily Johnson', 
-        patientId: 'P12346',
-        date: '2025-05-12', 
-        time: '11:30 AM', 
-        type: 'Follow-up',
-        status: 'confirmed'
-      },
-      { 
-        id: 3, 
-        patientName: 'Michael Brown', 
-        patientId: 'P12347',
-        date: '2025-05-13', 
-        time: '09:15 AM', 
-        type: 'Consultation',
-        status: 'pending'
-      },
-    ],
-    past: [
-      { 
-        id: 4, 
-        patientName: 'Sarah Wilson', 
-        patientId: 'P12348',
-        date: '2025-05-08', 
-        time: '02:00 PM', 
-        type: 'Check-up',
-        status: 'completed'
-      },
-      { 
-        id: 5, 
-        patientName: 'Robert Davis', 
-        patientId: 'P12349',
-        date: '2025-05-07', 
-        time: '10:45 AM', 
-        type: 'Follow-up',
-        status: 'completed'
-      },
-    ],
-    cancelled: [
-      { 
-        id: 6, 
-        patientName: 'Jessica Lee', 
-        patientId: 'P12350',
-        date: '2025-05-09', 
-        time: '03:30 PM', 
-        type: 'Consultation',
-        status: 'cancelled'
-      },
-    ]
-  };
+const Appointment = () => {
+	const [appointments, setAppointments] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 
-  const getStatusBadge = (status) => {
-    const statusStyles = {
-      confirmed: "bg-green-100 text-green-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      completed: "bg-blue-100 text-blue-800",
-      cancelled: "bg-red-100 text-red-800"
-    };
-    
-    return (
-      <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusStyles[status]}`}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </span>
-    );
-  };
+	useEffect(() => {
+		const fetchAppointments = async () => {
+			try {
+				setLoading(true);
+				// Assuming you have an API endpoint to fetch user's appointments
+				// Replace with your actual API endpoint
+				const doctorId = JSON.parse(localStorage.getItem("user"));
+				console.log(doctorId.id);
+				const response = await axios.get(
+					`http://localhost:5000/api/appointments/doctor/${doctorId.id}`,
+					{
+						headers: {
+							Authorization: `Bearer ${localStorage.getItem("token")}`,
+						},
+					}
+				);
+        console.log(response);
+				setAppointments(response.data.data);
+				setLoading(false);
+			} catch (err) {
+				setError("Failed to fetch appointments");
+				setLoading(false);
+				console.error("Error fetching appointments:", err);
+			}
+		};
 
-  const tabs = [
-    { key: 'Appointment', label: 'Appointment' },
-  ];
+		fetchAppointments();
+	}, []);
 
-  return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">My Appointments</h1>
-      
-      {/* Tabs */}
-      <div className="border-b border-gray-200 mb-6">
-        <nav className="flex space-x-8">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === tab.key
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              {tab.label} ({appointments[tab.key]?.length})
-            </button>
-          ))}
-        </nav>
-      </div>
-      
-      {/* Appointment List */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        {appointments[activeTab].length > 0 ? (
-          <ul className="divide-y divide-gray-200">
-            {appointments[activeTab].map((appointment) => (
-              <li key={appointment.id} className="p-4 hover:bg-gray-50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-gray-100 rounded-full p-2">
-                      <User size={24} className="text-gray-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{appointment.patientName}</p>
-                      <p className="text-sm text-gray-500">ID: {appointment.patientId}</p>
-                    </div>
-                  </div>
-                  <div>{getStatusBadge(appointment.status)}</div>
-                </div>
-                
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="flex items-center text-sm text-gray-500">
-                    <Calendar size={16} className="mr-2 text-gray-400" />
-                    {new Date(appointment.date).toLocaleDateString()}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <Clock size={16} className="mr-2 text-gray-400" />
-                    {appointment.time}
-                  </div>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <FileText size={16} className="mr-2 text-gray-400" />
-                    {appointment.type}
-                  </div>
-                </div>
-                
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div className="py-12 px-4 text-center">
-            <p className="text-gray-500">No {activeTab} appointments found.</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+	// Function to get appropriate status badge color
+	const getStatusBadgeClass = (status) => {
+		switch (status) {
+			case "confirmed":
+				return "bg-green-100 text-green-800";
+			case "pending":
+				return "bg-yellow-100 text-yellow-800";
+			case "completed":
+				return "bg-blue-100 text-blue-800";
+			case "cancelled":
+				return "bg-red-100 text-red-800";
+			case "no-show":
+				return "bg-gray-100 text-gray-800";
+			case "success":
+				return "bg-green-100 text-green-800";
+			default:
+				return "bg-gray-100 text-gray-800";
+		}
+	};
+
+	// Function to get appropriate payment status badge color
+	const getPaymentBadgeClass = (paymentStatus) => {
+		switch (paymentStatus) {
+			case "paid":
+				return "bg-green-100 text-green-800";
+			case "pending":
+				return "bg-yellow-100 text-yellow-800";
+			case "refunded":
+				return "bg-red-100 text-red-800";
+			case "success":
+				return "bg-green-100 text-green-800";
+			default:
+				return "bg-gray-100 text-gray-800";
+		}
+	};
+
+	// Function to format date
+	const formatAppointmentDate = (dateString) => {
+		const date = new Date(dateString);
+		return format(date, "PPP"); // "Jan 1, 2021"
+	};
+
+	return (
+		<div className="container mx-auto px-4 py-6">
+			<div className="flex justify-between items-center mb-6">
+				<h1 className="text-2xl font-bold text-gray-800">My Appointments</h1>
+				{/* <Link
+					to="/patient-dashboard/book-appointments"
+					className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+				>
+					Book New Appointment
+				</Link> */}
+			</div>
+
+			{loading ? (
+				<div className="text-center py-8">
+					<svg
+						className="animate-spin h-8 w-8 mx-auto text-blue-600"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+					>
+						<circle
+							className="opacity-25"
+							cx="12"
+							cy="12"
+							r="10"
+							stroke="currentColor"
+							strokeWidth="4"
+						></circle>
+						<path
+							className="opacity-75"
+							fill="currentColor"
+							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+						></path>
+					</svg>
+					<p className="mt-2 text-gray-600">Loading appointments...</p>
+				</div>
+			) : error ? (
+				<div className="bg-red-50 p-4 rounded-md">
+					<p className="text-red-800">{error}</p>
+				</div>
+			) : appointments.length === 0 ? (
+				<div className="text-center py-10 bg-gray-50 rounded-lg">
+					<svg
+						className="h-16 w-16 text-gray-400 mx-auto mb-4"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth={1.5}
+							d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+						/>
+					</svg>
+					<h2 className="text-xl font-medium text-gray-700 mb-2">
+						No appointments found
+					</h2>
+					<p className="text-gray-500 mb-6">
+						You haven't booked any appointments yet.
+					</p>
+					<Link
+						to="/patient-dashboard/book-appointments"
+						className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+					>
+						Book Your First Appointment
+					</Link>
+				</div>
+			) : (
+				<div className="bg-white shadow overflow-hidden sm:rounded-md">
+					<ul className="divide-y divide-gray-200">
+						{appointments.map((appointment) => (
+							<li
+								key={appointment._id}
+								className="px-4 py-4 sm:px-6 hover:bg-gray-50 transition-colors"
+							>
+								<div className="flex items-center justify-between">
+									<div className="flex flex-col">
+										<p className="text-sm font-medium text-gray-900">
+											Appointment with Mr/Mrs{" "}
+											{appointment.patient.firstName || "Doctor Name"}
+										</p>
+										<p className="text-sm text-gray-500">
+											{formatAppointmentDate(appointment.date)} •{" "}
+											{appointment.startTime} - {appointment.endTime}
+										</p>
+                    <p>Meeting Url: {appointment.meetingUrl}</p>
+									</div>
+									<div className="flex space-x-2">
+										<span
+											className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(
+												appointment.status
+											)}`}
+										>
+											{appointment.status.charAt(0).toUpperCase() +
+												appointment.status.slice(1)}
+										</span>
+										<span
+											className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getPaymentBadgeClass(
+												appointment.paymentStatus
+											)}`}
+										>
+											Payment:{" "}
+											{appointment.paymentStatus.charAt(0).toUpperCase() +
+												appointment.paymentStatus.slice(1)}
+										</span>
+									</div>
+								</div>
+								<div className="mt-2">
+									<p className="text-sm text-gray-500">
+										<span className="font-medium">Reason:</span>{" "}
+										{appointment.reason}
+									</p>
+									{appointment.notes && (
+										<p className="text-sm text-gray-500 mt-1">
+											<span className="font-medium">Notes:</span>{" "}
+											{appointment.notes}
+										</p>
+									)}
+								</div>
+								<div className="mt-3 flex space-x-3">
+									{appointment.status === "confirmed" &&
+										appointment.meetingUrl && (
+											<a
+												href={appointment.meetingUrl}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700"
+											>
+												Join Meeting
+											</a>
+										)}
+									{["pending", "confirmed"].includes(appointment.status) && (
+										<button
+											className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-red-600 hover:bg-red-700"
+											onClick={() => {
+												// Handle cancel appointment logic here
+												console.log("Cancel appointment:", appointment._id);
+											}}
+										>
+											Cancel
+										</button>
+									)}
+									<button
+										className="inline-flex items-center px-3 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
+										onClick={() => {
+											// Handle view details logic here
+											console.log("View details:", appointment._id);
+										}}
+									>
+										View Details
+									</button>
+								</div>
+							</li>
+						))}
+					</ul>
+				</div>
+			)}
+		</div>
+	);
 };
 
-export default DoctorAppointments;
+export default Appointment;
