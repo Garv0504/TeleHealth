@@ -1,6 +1,6 @@
 import React from "react";
 import CategoryCard from "../Components/CategoryCard";
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar"
 import VideoCard from "../Components/VideoCard";
 import Footer from "../Components/Footer";
 import Specialties from "../Components/Specialities";

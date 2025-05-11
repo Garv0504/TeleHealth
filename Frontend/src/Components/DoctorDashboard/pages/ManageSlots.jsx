@@ -393,36 +393,7 @@ const ManageSlots = () => {
 			</div>
 
 			{/* Display existing availability */}
-			<div className="bg-white p-6 rounded-lg shadow-md">
-				<h2 className="text-lg font-medium mb-4">Your Availability</h2>
-				{existingAvailability?.length === 0 ? (
-					<p className="text-gray-500">No availability added yet.</p>
-				) : (
-					<ul className="space-y-4">
-						{existingAvailability?.map((avail, idx) => (
-							<li key={idx} className="border p-4 rounded-md">
-								<div className="font-semibold">
-									{DAYS_OF_WEEK[avail.dayOfWeek]}
-								</div>
-								<div className="text-sm text-gray-600">
-									{avail.isRecurring
-										? "Recurring weekly"
-										: `Valid until: ${new Date(
-												avail.validTo
-										  ).toLocaleDateString()}`}
-								</div>
-								<div className="mt-2 text-sm">
-									{avail.slots.map((slot, i) => (
-										<div key={i}>
-											{slot.startTime} - {slot.endTime}
-										</div>
-									))}
-								</div>
-							</li>
-						))}
-					</ul>
-				)}
-			</div>
+			
 		</div>
 	);
 };

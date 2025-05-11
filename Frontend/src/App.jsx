@@ -5,7 +5,6 @@ import Home from "./Pages/Home";
 import Login from "./Pages/login";
 import Register from "./Pages/Register";
 import Footer from "./Components/Footer";
-
 import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardLayout from "./Components/PatientDashboard/DashboardLayout";
 import MedicalRecords from "./Components/PatientDashboard/pages/MedicalRecords";
@@ -21,6 +20,7 @@ import DoctorAppointments from "./Components/DoctorDashboard/pages/DoctorAppoint
 import DocDashboardLayout from "./Components/DoctorDashboard/DocDashboardLayout";
 import ManageSlots from "./Components/DoctorDashboard/pages/ManageSlots";
 import VideoCall from "./Components/PatientDashboard/pages/VideoCall";
+import PrivateRoute from "./Components/PrivateRoute";
 
 function App() {
 	return (
@@ -31,7 +31,14 @@ function App() {
 			<Route path="/doctor-register" element={<DoctorRegister />} />
 			<Route path="/consultation/:specialty" element={<ConsultationPage />} />
 
-			<Route path="/patient-dashboard" element={<DashboardLayout />}>
+			<Route
+				path="/patient-dashboard"
+				element={
+					<PrivateRoute>
+						<DashboardLayout />
+					</PrivateRoute>
+				}
+			>
 				<Route
 					index
 					element={<Navigate to="/patient-dashboard/appointments" replace />}
@@ -44,11 +51,22 @@ function App() {
 				<Route path="profile-settings" element={<ProfileSettings />} />
 				<Route path="book-appointments" element={<BookAppointment />} />
 			</Route>
-			<Route path="/doctor-dashboard" element={<DocDashboardLayout />}>
+			<Route
+				path="/doctor-dashboard"
+				element={
+					<PrivateRoute>
+						<DocDashboardLayout />
+					</PrivateRoute>
+				}
+			>
+				<Route
+					index
+					element={<Navigate to="/doctor-dashboard/appointments" replace />}
+				/>
 				<Route path="manage-slots" element={<ManageSlots />} />
 				<Route path="appointments" element={<DoctorAppointments />} />
 			</Route>
-			<Route path="/room/:roomId" element={<VideoCall/>}/>
+			<Route path="/room/:roomId" element={<VideoCall />} />
 		</Routes>
 	);
 }
