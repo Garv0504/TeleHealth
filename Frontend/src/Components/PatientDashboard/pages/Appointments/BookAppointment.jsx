@@ -9,6 +9,7 @@ import {
 	ChevronRight,
 } from "lucide-react";
 import axios from "axios";
+import { handlepay } from "../../../../services/Payments";
 
 // Memoized components to prevent unnecessary re-renders
 const DoctorItem = memo(({ doctor, isSelected, onClick }) => (
@@ -196,35 +197,46 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 				startTime: selectedSlot.startTime,
 				endTime: selectedSlot.endTime,
 				reason,
-        meetingUrl: "https://meet.google.com",
+				meetingUrl: "",
 			};
 
-			const token = localStorage.getItem("token");
-			const config = {
-				headers: {
-					"Content-Type": "application/json",
-					"Authorization": `Bearer ${token}`,
-				},
-			};
+			// 1. Initiate payment
+			const paymentResponse = await handlepay({
+				amount: selectedDoctor.consultationFee,
+				name: `${selectedDoctor.user.firstName} ${selectedDoctor.user.lastName}`,
+				email: JSON.parse(localStorage.getItem("user")).email,
+				phone: "4835487234", // Should come from user profile
+			});
+      console.log(paymentResponse)
 
-			const response = await axios.post(
-				ENDPOINTS.appointments,
-				appointmentData,
-				config
-			);
+			// 2. Only proceed if payment was successful
+			if (paymentResponse.success) {
+				const token = localStorage.getItem("token");
+				const response = await axios.post(
+					"http://localhost:5000/api/appointments/book-appointment",
+					{
+						...appointmentData,
+						status: "confirmed",
+						paymentId: paymentResponse.paymentId,
+						meetingUrl: "https:google.com", // Implement this function
+					},
+					{
+						headers: {
+							"Authorization": `Bearer ${token}`,
+							"Content-Type": "application/json",
+						},
+					}
+				);
 
-			if (onSuccess) {
-				onSuccess(response.data);
+				if (onSuccess) onSuccess(response.data);
 			}
 		} catch (err) {
-			if (err.response?.data?.message) {
-				setError(err.response.data.message);
-			} else if (err.response?.status === 401) {
-				setError("Please log in to book an appointment");
-			} else {
-				setError("Failed to book appointment. Please try again.");
-			}
-			console.error("Error booking appointment:", err);
+			const errorMessage =
+				err.response?.data?.message ||
+				err.message ||
+				"Failed to book appointment";
+			setError(errorMessage);
+			console.error("Booking error:", err);
 		} finally {
 			setLoadingBooking(false);
 		}
@@ -269,15 +281,15 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 		);
 	};
 
-  const closeAppointment = () => {
-    setStep(1);
-    setSelectedDoctor(null);
-    setSelectedDate(new Date());
-    setTimeSlots([]);
-    setSelectedSlot(null);
-    setReason("");
-    navigate("/patient-dashboard/appointments");
-  }
+	const closeAppointment = () => {
+		setStep(1);
+		setSelectedDoctor(null);
+		setSelectedDate(new Date());
+		setTimeSlots([]);
+		setSelectedSlot(null);
+		setReason("");
+		navigate("/patient-dashboard/appointments");
+	};
 
 	const renderDoctorSelection = () => {
 		return (
