@@ -31,7 +31,7 @@ export async function handlepay({ amount, name, email, phone }) {
 				})
 				.then((orderResponse) => {
 					const options = {
-						key:"rzp_test_FObc1483OfX8Nc",
+						key: import.meta.env.VITE_REACT_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
 						amount: orderResponse.data.amount,
 						currency,
 						name: "Healthcare App",
