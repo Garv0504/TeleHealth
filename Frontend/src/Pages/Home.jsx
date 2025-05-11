@@ -4,13 +4,14 @@ import Navbar from "../components/Navbar";
 import VideoCard from "../Components/VideoCard";
 import Footer from "../Components/Footer";
 import Specialties from "../Components/Specialities";
-import HomeBox from "../Components/HomeBox";
+import HomeCard1 from "../Components/HomeCard1";
+import HomeCard2 from "../Components/HomeCard2";
 
 const Home = () => {
 	return (
 		<>
 		<Navbar/>
-			<div className="bg-[#D1E9FE] pb-3 h-[800px]">
+			<div className="bg-[#D1E9FE] pb-3 pt-5 h-[800px] ">
 				<div className="text-center">
 					<p className="text-slate-700 text-lg">Remove Doubts</p>
 					<h1 className="text-4xl md:text-5xl font-bold text-slate-800 mt-2">
@@ -112,7 +113,8 @@ const Home = () => {
 			</div>
 			<VideoCard/>
 			<Specialties/>
-			<HomeBox/>
+			<HomeCard1/>
+			<HomeCard2/>
 			<Footer/>
 		</>
 	);

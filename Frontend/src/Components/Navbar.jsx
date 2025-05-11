@@ -14,7 +14,7 @@ export default function Navbar() {
 		{ name: "Home", link: "#" },
 		{ name: "Find Doctors", link: "#" },
 		{ name: "Find Medical", link: "#" },
-		{ name: "Consulto Prime", link: "#" },
+		{ name: "Prime", link: "#" },
 		{ name: "Help", link: "#" },
 	];
 
