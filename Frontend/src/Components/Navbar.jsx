@@ -147,7 +147,7 @@ export default function Navbar() {
 								to="/register"
 								className="bg-blue-900 hover:bg-blue-800 text-white px-5 py-2 rounded-full font-medium transition-colors duration-200"
 							>
-								Sign in
+								Sign up
 							</Link>
 						</>
 					)}
