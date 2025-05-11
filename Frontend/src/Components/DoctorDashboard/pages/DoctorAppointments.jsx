@@ -150,14 +150,9 @@ const Appointment = () => {
 						No appointments found
 					</h2>
 					<p className="text-gray-500 mb-6">
-						You haven't booked any appointments yet.
+						You don't have any appointments yet.
 					</p>
-					<Link
-						to="/patient-dashboard/book-appointments"
-						className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-					>
-						Book Your First Appointment
-					</Link>
+					
 				</div>
 			) : (
 				<div className="bg-white shadow overflow-hidden sm:rounded-md">
