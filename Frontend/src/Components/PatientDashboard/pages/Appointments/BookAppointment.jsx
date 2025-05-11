@@ -9,6 +9,7 @@ import {
 	ChevronRight,
 } from "lucide-react";
 import axios from "axios";
+import { handlepay } from "../../../../services/Payments";
 
 // Memoized components to prevent unnecessary re-renders
 const DoctorItem = memo(({ doctor, isSelected, onClick }) => (
@@ -196,7 +197,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 				startTime: selectedSlot.startTime,
 				endTime: selectedSlot.endTime,
 				reason,
-        meetingUrl: "https://meet.google.com",
+				meetingUrl: "",
 			};
 
 			const token = localStorage.getItem("token");
@@ -207,14 +208,47 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 				},
 			};
 
-			const response = await axios.post(
-				ENDPOINTS.appointments,
-				appointmentData,
-				config
-			);
+			const paymentResponse = await handlepay({
+				amount: selectedDoctor.consultationFee,
+				name: `${selectedDoctor.user.firstName} ${selectedDoctor.user.lastName}`,
+				email: JSON.parse(localStorage.getItem("user")).email,
+				phone: "user_phone_number", // Get from user profile
+				doctorDetails: {
+					_id: selectedDoctor._id,
+					specialty: selectedDoctor.specialty,
+					userId: selectedDoctor.user._id,
+				},
+			});
 
-			if (onSuccess) {
-				onSuccess(response.data);
+			// const response = await axios.post(
+			// 	ENDPOINTS.appointments,
+			// 	appointmentData,
+			// 	config
+			// );
+
+			// if (onSuccess) {
+			// 	onSuccess(response.data);
+			// }
+
+			if (paymentResponse.success) {
+				const token = localStorage.getItem("token");
+				const response = await axios.post(
+					"http:localhost:5000/api/appointments/book-appointment",
+					{
+						...appointmentData,
+						status: "confirmed",
+						// paymentId: paymentResponse.paymentId,
+						meetingUrl: "https:local.com", // Your meeting URL generator
+					},
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					}
+				);
+
+				// 4. Show success and update UI
+				if (onSuccess) onSuccess(response.data);
 			}
 		} catch (err) {
 			if (err.response?.data?.message) {
@@ -269,15 +303,15 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 		);
 	};
 
-  const closeAppointment = () => {
-    setStep(1);
-    setSelectedDoctor(null);
-    setSelectedDate(new Date());
-    setTimeSlots([]);
-    setSelectedSlot(null);
-    setReason("");
-    navigate("/patient-dashboard/appointments");
-  }
+	const closeAppointment = () => {
+		setStep(1);
+		setSelectedDoctor(null);
+		setSelectedDate(new Date());
+		setTimeSlots([]);
+		setSelectedSlot(null);
+		setReason("");
+		navigate("/patient-dashboard/appointments");
+	};
 
 	const renderDoctorSelection = () => {
 		return (
