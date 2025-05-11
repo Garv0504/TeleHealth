@@ -200,65 +200,43 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 				meetingUrl: "",
 			};
 
-			const token = localStorage.getItem("token");
-			const config = {
-				headers: {
-					"Content-Type": "application/json",
-					"Authorization": `Bearer ${token}`,
-				},
-			};
-
+			// 1. Initiate payment
 			const paymentResponse = await handlepay({
 				amount: selectedDoctor.consultationFee,
 				name: `${selectedDoctor.user.firstName} ${selectedDoctor.user.lastName}`,
 				email: JSON.parse(localStorage.getItem("user")).email,
-				phone: "user_phone_number", // Get from user profile
-				doctorDetails: {
-					_id: selectedDoctor._id,
-					specialty: selectedDoctor.specialty,
-					userId: selectedDoctor.user._id,
-				},
+				phone: "4835487234", // Should come from user profile
 			});
+      console.log(paymentResponse)
 
-			// const response = await axios.post(
-			// 	ENDPOINTS.appointments,
-			// 	appointmentData,
-			// 	config
-			// );
-
-			// if (onSuccess) {
-			// 	onSuccess(response.data);
-			// }
-
+			// 2. Only proceed if payment was successful
 			if (paymentResponse.success) {
 				const token = localStorage.getItem("token");
 				const response = await axios.post(
-					"http:localhost:5000/api/appointments/book-appointment",
+					"http://localhost:5000/api/appointments/book-appointment",
 					{
 						...appointmentData,
 						status: "confirmed",
-						// paymentId: paymentResponse.paymentId,
-						meetingUrl: "https:local.com", // Your meeting URL generator
+						paymentId: paymentResponse.paymentId,
+						meetingUrl: "https:google.com", // Implement this function
 					},
 					{
 						headers: {
-							Authorization: `Bearer ${token}`,
+							"Authorization": `Bearer ${token}`,
+							"Content-Type": "application/json",
 						},
 					}
 				);
 
-				// 4. Show success and update UI
 				if (onSuccess) onSuccess(response.data);
 			}
 		} catch (err) {
-			if (err.response?.data?.message) {
-				setError(err.response.data.message);
-			} else if (err.response?.status === 401) {
-				setError("Please log in to book an appointment");
-			} else {
-				setError("Failed to book appointment. Please try again.");
-			}
-			console.error("Error booking appointment:", err);
+			const errorMessage =
+				err.response?.data?.message ||
+				err.message ||
+				"Failed to book appointment";
+			setError(errorMessage);
+			console.error("Booking error:", err);
 		} finally {
 			setLoadingBooking(false);
 		}
