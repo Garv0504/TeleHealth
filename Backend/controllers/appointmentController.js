@@ -201,7 +201,7 @@ exports.bookAppointment = asyncHandler(async (req, res, next) => {
   // });
 });
 
-// @desc    Update appointment status
+// @desc       Update    appointment status
 // @route   PUT /api/appointments/:id/status
 exports.updateAppointmentStatus = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
