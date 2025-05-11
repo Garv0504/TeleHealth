@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 export default function Specialties({id}) {
 	const [hoveredCard, setHoveredCard] = useState(null);
 	const navigate = useNavigate();
+	// const user = JSON.parse(localStorage.getItem('user'));
+	// console.log(user)
 
 const handleSeeAllClick = () => {
   const token = localStorage.getItem('token');
