@@ -17,6 +17,7 @@ connectDB();
 const authRoutes = require("./routes/authRoutes");
 const availabilityRoutes = require("./routes/availabilityRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 const paymentRoutes = require("./routes/payments");
 
 const app = express();
@@ -43,7 +44,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/availability", availabilityRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/payment", paymentRoutes);
-
 
 // app.use("/", notificationRoutes);
 // Error handler middleware
