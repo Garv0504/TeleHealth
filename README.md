@@ -14,7 +14,7 @@ TeleHealth is a full-stack telemedicine platform that allows patients to seamles
 
 <p>
   Check out the live version of the application: 
-  <a href="https://telehealth-git-main-garys-projects-f9c9e20e.vercel.app" target="_blank" rel="noopener noreferrer">
+  <a href="telehealth-beta.vercel.app" target="_blank" rel="noopener noreferrer">
     Live Demo
   </a>
 </p>
