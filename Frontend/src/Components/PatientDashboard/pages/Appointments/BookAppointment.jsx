@@ -664,7 +664,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 							loadingBooking ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
 						}`}
 					>
-						{loadingBooking ? "Booking..." : "Confirm Booking"}
+						{loadingBooking ? "Booking..." : "Pay & Book"}
 					</button>
 				)}
 			</div>
