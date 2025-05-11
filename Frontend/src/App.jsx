@@ -25,7 +25,7 @@ function App() {
 			<Route path="/" element={<Home />} />
 			<Route path="/login" element={<Login />} />
 			<Route path="/register" element={<Register />} />
-			<Route path="/doctor-register" element={<DoctorRegister/>} />
+			<Route path="/doctor-register" element={<DoctorRegister />} />
 			<Route path="/consultation/:specialty" element={<ConsultationPage />} />
 
 			<Route path="/patient-dashboard" element={<DashboardLayout />}>
@@ -40,7 +40,6 @@ function App() {
 				<Route path="payments" element={<Payments />} />
 				<Route path="profile-settings" element={<ProfileSettings />} />
 				<Route path="book-appointments" element={<BookAppointment />} />
-
 			</Route>
       <Route path="/doctor-dashboard" element={<DocDashboardLayout/>}>
         <Route path="manage-slots" element={<ManageSlots/>}/>
