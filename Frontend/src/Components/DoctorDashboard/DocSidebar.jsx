@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 const DoctorSidebar = () => {
-  const [doctorData, setDoctorData] = useState([])
+	const [doctorData, setDoctorData] = useState([]);
 	const navItems = [
 		{
 			path: "/doctor-dashboard/manage-slots",
@@ -28,25 +28,24 @@ const DoctorSidebar = () => {
 	];
 
 	useEffect(() => {
-  const fetchUser = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/auth/me", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      console.log(response.data.data);
-      setDoctorData(response.data.data);
-     
-       // log actual response data
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-  };
+		const fetchUser = async () => {
+			try {
+				const response = await axios.get("http://localhost:5000/api/auth/me", {
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+					},
+				});
+				console.log(response.data.data);
+				setDoctorData(response.data.data);
 
-  fetchUser();
-}, []);
+				// log actual response data
+			} catch (error) {
+				console.error("Error fetching user:", error);
+			}
+		};
 
+		fetchUser();
+	}, []);
 
 	return (
 		<div className="flex flex-col h-full bg-white border-r">
@@ -60,7 +59,9 @@ const DoctorSidebar = () => {
 						<h2 className="font-medium text-gray-800">
 							{doctorData.user?.firstName} {doctorData.user?.lastName}
 						</h2>
-						<p className="text-sm text-gray-500">{doctorData.profile?.specialty}</p>
+						<p className="text-sm text-gray-500">
+							{doctorData.profile?.specialty}
+						</p>
 						<p className="text-xs text-gray-400">
 							License: {doctorData.profile?.licenseNumber}
 						</p>

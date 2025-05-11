@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 
 export default function Specialties() {
 	const [hoveredCard, setHoveredCard] = useState(null);
-
 
 	return (
 		<div className="bg-white py-16">
@@ -80,9 +78,9 @@ export default function Specialties() {
 
 function SpecialtyCard({ icon, title, id, hoveredCard, setHoveredCard }) {
 	const isHovered = hoveredCard === id;
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  const handleConsultClick = (specialty) => {
+	const handleConsultClick = (specialty) => {
 		navigate(`/consultation/${specialty.toLowerCase().replace(/\s+/g, "-")}`);
 	};
 
