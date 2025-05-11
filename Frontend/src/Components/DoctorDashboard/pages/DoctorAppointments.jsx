@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { format } from "date-fns";
 
@@ -78,6 +78,8 @@ const Appointment = () => {
 		const date = new Date(dateString);
 		return format(date, "PPP"); // "Jan 1, 2021"
 	};
+
+  const navigate = useNavigate();
 
 	return (
 		<div className="container mx-auto px-4 py-6">
@@ -166,7 +168,6 @@ const Appointment = () => {
 											{formatAppointmentDate(appointment.date)} •{" "}
 											{appointment.startTime} - {appointment.endTime}
 										</p>
-                    <p>Meeting Url: {appointment.meetingUrl}</p>
 									</div>
 									<div className="flex space-x-2">
 										<span
@@ -201,28 +202,14 @@ const Appointment = () => {
 									)}
 								</div>
 								<div className="mt-3 flex space-x-3">
-									{appointment.status === "confirmed" &&
-										appointment.meetingUrl && (
 											<a
-												href={appointment.meetingUrl}
-												target="_blank"
+												onClick={() => {navigate(`/room/${appointment.meetingUrl}`)}}
 												rel="noopener noreferrer"
 												className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700"
 											>
 												Join Meeting
 											</a>
-										)}
-									{["pending", "confirmed"].includes(appointment.status) && (
-										<button
-											className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-red-600 hover:bg-red-700"
-											onClick={() => {
-												// Handle cancel appointment logic here
-												console.log("Cancel appointment:", appointment._id);
-											}}
-										>
-											Cancel
-										</button>
-									)}
+									
 									<button
 										className="inline-flex items-center px-3 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
 										onClick={() => {
