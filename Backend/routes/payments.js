@@ -3,8 +3,6 @@ const Razorpay = require("razorpay");
 const crypto = require("crypto");
 
 const router = express.Router();
-const app = express();
-app.use(express.json());
 
 router.post("/validate", async (req, res) => {
   console.log(req.body);
@@ -33,6 +31,7 @@ router.post("/order", async (req, res) => {
       key_secret: process.env.key_secret,
     });
 
+    console.log(req.body);
     const options = {
       amount: req.body.amount,
       currency: req.body.currency,
@@ -48,7 +47,7 @@ router.post("/order", async (req, res) => {
     res.json(order);
   } catch (err) {
     console.log(err);
-    res.status(500).send("eror");
+    res.status(500).send("error");
   }
 });
 
