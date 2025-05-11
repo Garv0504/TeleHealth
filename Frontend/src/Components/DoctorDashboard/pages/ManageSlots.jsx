@@ -10,7 +10,7 @@ const ManageSlots = () => {
 		"Thursday",
 		"Friday",
 		"Saturday",
-    "Sunday"
+    	"Sunday"
 	];
 
 	const API_BASE_URL = "http://localhost:5000/api";
