@@ -13,7 +13,7 @@ const ManageSlots = () => {
     	"Sunday"
 	];
 
-	const API_BASE_URL = `${import.meta.env.VITE_REACT_APP_BASE_URL}/api`;
+	const API_BASE_URL = `${import.meta.env.VITE_REACT_APP_BASE_URL}`;
 	const ENDPOINTS = {
 		availability: `${API_BASE_URL}/availability`,
 	};
