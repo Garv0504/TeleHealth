@@ -141,7 +141,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 	const navigate = useNavigate();
 
 	// API endpoints
-	const API_BASE_URL = `${import.meta.env.VITE_REACT_APP_BASE_URL}/api`;
+	const API_BASE_URL = `${import.meta.env.VITE_REACT_APP_BASE_URL}`;
 	const ENDPOINTS = {
 		doctors: `${API_BASE_URL}/auth/doctors`,
 		availability: `${API_BASE_URL}/appointments/availability`,
@@ -270,7 +270,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 				// navigate(`/room/${url}`)
 				const token = localStorage.getItem("token");
 				const response = await axios.post(
-					`${import.meta.env.VITE_REACT_APP_BASE_URL}/api/appointments/book-appointment`,
+					`${import.meta.env.VITE_REACT_APP_BASE_URL}/appointments/book-appointment`,
 					{
 						...appointmentData,
 						status: "confirmed",

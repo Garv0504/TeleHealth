@@ -17,7 +17,7 @@ const Appointment = () => {
 				const patientId = JSON.parse(localStorage.getItem("user"));
 				console.log(patientId.id);
 				const response = await axios.get(
-					`${import.meta.env.VITE_REACT_APP_BASE_URL}/api/appointments/patient/${patientId.id}`,
+					`${import.meta.env.VITE_REACT_APP_BASE_URL}/appointments/patient/${patientId.id}`,
 					{
 						headers: {
 							Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -83,6 +83,7 @@ const Appointment = () => {
 
 	return (
 		<div className="container mx-auto px-4 py-6">
+      <h4 onClick={() => navigate("/") } className="cursor-pointer border-2 w-[fit-content] py-1 px-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors">Home</h4>
 			<div className="flex justify-between items-center mb-6">
 				<h1 className="text-2xl font-bold text-gray-800">My Appointments</h1>
 				<Link
@@ -209,7 +210,7 @@ const Appointment = () => {
 											<a
 												onClick={() => {navigate(`/room/${appointment.meetingUrl}`)}}
 												rel="noopener noreferrer"
-												className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700"
+												className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700 cursor-pointer"
 											>
 												Join Meeting
 											</a>
