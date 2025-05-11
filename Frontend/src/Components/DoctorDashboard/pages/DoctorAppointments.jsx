@@ -87,7 +87,7 @@ const Appointment = () => {
 		<div className="container mx-auto px-4 py-6">
 			<h4
 				onClick={() => navigate("/")}
-				className="cursor-pointer border-2 w-[fit-content] py-1 px-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+				className="cursor-pointer border-2 w-[fit-content] py-1 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 rounded-md transition-colors"
 			>
 				Home
 			</h4>
