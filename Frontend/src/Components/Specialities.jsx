@@ -1,8 +1,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Specialties() {
+export default function Specialties({id}) {
 	const [hoveredCard, setHoveredCard] = useState(null);
+	const navigate = useNavigate();
+	// const user = JSON.parse(localStorage.getItem('user'));
+	// console.log(user)
+
+const handleSeeAllClick = () => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    navigate('/patient-dashboard');
+  } else {
+    navigate('/login');
+  }
+};
+
 
 	return (
 		<div className="bg-white py-16">
@@ -67,8 +80,8 @@ export default function Specialties() {
 
 				{/* See All Button */}
 				<div className="flex justify-center mt-12">
-					<button className="bg-indigo-800 text-white px-8 py-3 rounded-full text-sm font-medium cursor-pointer">
-						See All Specialities
+					<button onClick={handleSeeAllClick} className="bg-indigo-800 text-white px-8 py-3 rounded-full text-sm font-medium cursor-pointer">
+						Book Appointments
 					</button>
 				</div>
 			</div>
@@ -98,7 +111,7 @@ function SpecialtyCard({ icon, title, id, hoveredCard, setHoveredCard }) {
 			</p>
 
 			{/* Consult Now button with transition */}
-			<div
+			{/* <div
 				className={`absolute bottom-4 w-full flex justify-center transition-opacity duration-300 ${
 					isHovered ? "opacity-100" : "opacity-0"
 				}`}
@@ -109,7 +122,7 @@ function SpecialtyCard({ icon, title, id, hoveredCard, setHoveredCard }) {
 				>
 					Consult Now
 				</button>
-			</div>
+			</div> */}
 		</div>
 	);
 }

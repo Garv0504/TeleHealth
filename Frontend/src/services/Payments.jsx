@@ -23,7 +23,7 @@ export async function handlepay({ amount, name, email, phone }) {
 
 		try {
 			axios
-				.post(`${import.meta.env.VITE_REACT_APP_BASE_URL}/api/payment/order`, {
+				.post(`${import.meta.env.VITE_REACT_APP_BASE_URL}/payment/order`, {
 					amount: amount * 100, // Convert to paise
 					currency,
 					receipt: receiptId,
@@ -39,7 +39,7 @@ export async function handlepay({ amount, name, email, phone }) {
 						order_id: orderResponse.data.id,
 						handler: function (response) {
 							axios
-								.post(`${import.meta.env.VITE_REACT_APP_BASE_URL}/api/payment/validate`, response)
+								.post(`${import.meta.env.VITE_REACT_APP_BASE_URL}/payment/validate`, response)
 								.then((validationResponse) => {
 									if (validationResponse.data.success) {
 										resolve({

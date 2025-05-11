@@ -8,18 +8,22 @@ import {
 	Settings,
 	MessageCircle,
 } from "lucide-react";
-import docvideo from "../assets/docvideo.avif";
-import profilephoto from "../assets/profilephoto.jpg";
+// import docvideo from "../assets/docvideo.avif";
+// import profilephoto from "../assets/profilephoto.jpg";
 
 const VideoCard = () => {
 	return (
-		<div className="relative mt-12 px-4 max-w-3xl mx-auto h-[600px] -top-64">
+		<div className=" hidden md:block relative mt-16 px-4 max-w-3xl mx-auto  ">
 			<div className="bg-white rounded-xl overflow-hidden shadow-lg ">
 				<div className="relative">
-					<img src={docvideo} alt="Doctor office" className="w-full h-[500px]" />
+					<img
+						src="./docvideo.avif"
+						alt="Doctor office"
+						className="w-full h-[500px]"
+					/>
 					<div className="absolute bottom-4 left-4 bg-white p-2 rounded-lg shadow flex items-center space-x-2">
 						<img
-							src={profilephoto}
+							src="./profilephoto.jpg"
 							alt="Doctor"
 							className="w-10 h-10 object-cover rounded-full"
 						/>
@@ -48,14 +52,6 @@ const VideoCard = () => {
 						</p>
 					</div>
 				</div>
-			</div>
-
-			<div className="absolute -right-4 top-16 bg-white p-2 rounded-lg shadow-lg">
-				<img
-					src="/api/placeholder/60/60"
-					alt="Patient"
-					className="w-16 h-16 rounded-lg"
-				/>
 			</div>
 
 			<div className="absolute -right-4 top-44 bg-white p-3 rounded-lg shadow-lg">

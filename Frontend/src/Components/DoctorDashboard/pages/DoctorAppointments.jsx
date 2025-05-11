@@ -17,14 +17,16 @@ const Appointment = () => {
 				const doctorId = JSON.parse(localStorage.getItem("user"));
 				console.log(doctorId.id);
 				const response = await axios.get(
-					`${import.meta.env.VITE_REACT_APP_BASE_URL}/api/appointments/doctor/${doctorId.id}`,
+					`${import.meta.env.VITE_REACT_APP_BASE_URL}/appointments/doctor/${
+						doctorId.id
+					}`,
 					{
 						headers: {
 							Authorization: `Bearer ${localStorage.getItem("token")}`,
 						},
 					}
 				);
-        console.log(response);
+				console.log(response);
 				setAppointments(response.data.data);
 				setLoading(false);
 			} catch (err) {
@@ -79,10 +81,17 @@ const Appointment = () => {
 		return format(date, "PPP"); // "Jan 1, 2021"
 	};
 
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
 	return (
 		<div className="container mx-auto px-4 py-6">
+			<h4
+				onClick={() => navigate("/")}
+				className="cursor-pointer border-2 w-[fit-content] py-1 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 rounded-md transition-colors"
+			>
+				Home
+			</h4>
+
 			<div className="flex justify-between items-center mb-6">
 				<h1 className="text-2xl font-bold text-gray-800">My Appointments</h1>
 				{/* <Link
@@ -141,14 +150,9 @@ const Appointment = () => {
 						No appointments found
 					</h2>
 					<p className="text-gray-500 mb-6">
-						You haven't booked any appointments yet.
+						You don't have any appointments yet.
 					</p>
-					<Link
-						to="/patient-dashboard/book-appointments"
-						className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-					>
-						Book Your First Appointment
-					</Link>
+					
 				</div>
 			) : (
 				<div className="bg-white shadow overflow-hidden sm:rounded-md">
@@ -202,14 +206,16 @@ const Appointment = () => {
 									)}
 								</div>
 								<div className="mt-3 flex space-x-3">
-											<a
-												onClick={() => {navigate(`/room/${appointment.meetingUrl}`)}}
-												rel="noopener noreferrer"
-												className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700"
-											>
-												Join Meeting
-											</a>
-									
+									<a
+										onClick={() => {
+											navigate(`/room/${appointment.meetingUrl}`);
+										}}
+										rel="noopener noreferrer"
+										className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700 cursor-pointer"
+									>
+										Join Meeting
+									</a>
+
 									<button
 										className="inline-flex items-center px-3 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
 										onClick={() => {
