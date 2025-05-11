@@ -30,7 +30,7 @@ const DoctorSidebar = () => {
 	useEffect(() => {
 		const fetchUser = async () => {
 			try {
-				const response = await axios.get("http://localhost:5000/api/auth/me", {
+				const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BASE_URL}/api/auth/me`, {
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem("token")}`,
 					},
