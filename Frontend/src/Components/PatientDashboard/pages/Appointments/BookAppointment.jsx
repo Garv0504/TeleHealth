@@ -269,6 +269,16 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 		);
 	};
 
+  const closeAppointment = () => {
+    setStep(1);
+    setSelectedDoctor(null);
+    setSelectedDate(new Date());
+    setTimeSlots([]);
+    setSelectedSlot(null);
+    setReason("");
+    navigate("/patient-dashboard/appointments");
+  }
+
 	const renderDoctorSelection = () => {
 		return (
 			<div>
@@ -469,7 +479,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 						Book an Appointment
 					</h2>
 					<button
-						onClick={onClose}
+						onClick={() => closeAppointment()}
 						className="text-gray-400 hover:text-gray-500"
 					>
 						&times;

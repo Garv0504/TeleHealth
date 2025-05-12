@@ -14,12 +14,18 @@ const Appointment = () => {
 				setLoading(true);
 				// Assuming you have an API endpoint to fetch user's appointments
 				// Replace with your actual API endpoint
-				const patientId = localStorage.getItem("user");
+				const patientId = JSON.parse(localStorage.getItem("user"));
 				console.log(patientId.id);
 				const response = await axios.get(
-					`http://localhost:5000/api/appointments/patient/${patientId.id}`
+					`http://localhost:5000/api/appointments/patient/${patientId.id}`,
+					{
+						headers: {
+							Authorization: `Bearer ${localStorage.getItem("token")}`,
+						},
+					}
 				);
-				setAppointments(response.data);
+        console.log(response);
+				setAppointments(response.data.data);
 				setLoading(false);
 			} catch (err) {
 				setError("Failed to fetch appointments");
@@ -154,7 +160,7 @@ const Appointment = () => {
 									<div className="flex flex-col">
 										<p className="text-sm font-medium text-gray-900">
 											Appointment with Dr.{" "}
-											{appointment.doctor.name || "Doctor Name"}
+											{appointment.doctor.firstName || "Doctor Name"}
 										</p>
 										<p className="text-sm text-gray-500">
 											{formatAppointmentDate(appointment.date)} •{" "}
@@ -186,6 +192,7 @@ const Appointment = () => {
 										<span className="font-medium">Reason:</span>{" "}
 										{appointment.reason}
 									</p>
+                  <p>Meeting Url: {appointment.meetingUrl}</p>
 									{appointment.notes && (
 										<p className="text-sm text-gray-500 mt-1">
 											<span className="font-medium">Notes:</span>{" "}
