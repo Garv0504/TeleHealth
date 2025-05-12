@@ -17,7 +17,7 @@ const Appointment = () => {
 				const doctorId = JSON.parse(localStorage.getItem("user"));
 				console.log(doctorId.id);
 				const response = await axios.get(
-					`http://localhost:5000/api/appointments/doctor/${doctorId.id}`,
+					`${import.meta.env.VITE_REACT_APP_BASE_URL}/api/appointments/doctor/${doctorId.id}`,
 					{
 						headers: {
 							Authorization: `Bearer ${localStorage.getItem("token")}`,
