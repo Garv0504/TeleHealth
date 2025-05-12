@@ -10,43 +10,97 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { handlepay } from "../../../../services/Payments";
+import { generateMeetingUrl } from "../../../../services/VideoCall";
 
 // Memoized components to prevent unnecessary re-renders
-const DoctorItem = memo(({ doctor, isSelected, onClick }) => (
-	<div
-		className={`p-4 border rounded-lg cursor-pointer transition-all ${
-			isSelected
-				? "border-blue-500 bg-blue-50"
-				: "border-gray-200 hover:border-blue-300"
-		}`}
-		onClick={onClick}
-	>
-		<div className="flex items-center">
-			<div className="flex-shrink-0 h-16 w-16 bg-gray-200 rounded-full flex items-center justify-center">
-				{doctor.image ? (
-					<img
-						src={doctor.image}
-						alt={doctor.name}
-						className="h-16 w-16 rounded-full"
-					/>
-				) : (
-					<User className="h-8 w-8 text-gray-500" />
-				)}
+const DoctorItem = ({ doctor, isSelected, onClick }) => {
+	return (
+		<div
+			className={`grid gap-5 border rounded-lg p-4 cursor-pointer transition-all shadow-sm hover:shadow-md ${
+				isSelected
+					? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
+					: "border-gray-200 hover:border-blue-300"
+			}`}
+			onClick={onClick}
+		>
+			{/* Doctor Image */}
+			<div className="flex justify-center mb-3">
+				<div className="h-24 w-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+					{doctor.user.avatar ? (
+						<img
+							src={doctor.user.avatar}
+							alt={`Dr. ${doctor.user.firstName} ${doctor.user.lastName}`}
+							className="h-full w-full object-cover"
+						/>
+					) : (
+						<div className="h-full w-full bg-blue-100 flex items-center justify-center">
+							<span className="text-2xl font-medium text-blue-600">
+								{doctor.user.firstName.charAt(0)}
+								{doctor.user.lastName.charAt(0)}
+							</span>
+						</div>
+					)}
+				</div>
 			</div>
-			<div className="ml-4">
-				<h3 className="text-lg font-medium text-gray-900">
-					{doctor.user.firstName}
+
+			{/* Doctor Info */}
+			<div className="text-center flex flex-col items-center gap-4">
+				<h3 className="text-lg font-semibold text-gray-900">
+					Dr. {doctor.user.firstName} {doctor.user.lastName}
 				</h3>
+				<p className="text-sm text-blue-600 font-medium">{doctor.specialty}</p>
+
+				{/* Rating */}
 				{doctor.rating && (
-					<div className="flex items-center text-sm text-yellow-500 mt-1">
-						{"★".repeat(Math.floor(doctor.rating))}
-						<span className="text-gray-500 ml-1">{doctor.rating}</span>
+					<div className="flex items-center justify-center mt-1">
+						<div className="flex text-yellow-400">
+							{"★".repeat(Math.floor(doctor.rating))}
+							{"☆".repeat(5 - Math.floor(doctor.rating))}
+						</div>
+						<span className="text-gray-500 text-sm ml-1">
+							({doctor.rating.toFixed(1)})
+						</span>
+					</div>
+				)}
+
+				{/* Consultation Fee */}
+				<div className="mt-2">
+					<span className="text-sm text-gray-500">Consultation Fee:</span>
+					<p className="text-lg font-bold text-gray-800">
+						₹{doctor.consultationFee}
+					</p>
+				</div>
+
+				{/* Languages Spoken */}
+				{doctor.languagesSpoken?.length > 0 && (
+					<div className="mt-2">
+						<span className="text-sm text-gray-500">Languages:</span>
+						<p className="text-sm text-gray-700">
+							{doctor.languagesSpoken.join(", ")}
+						</p>
+					</div>
+				)}
+
+				{/* Qualifications */}
+				{doctor.qualifications?.length > 0 && (
+					<div className="mt-2">
+						<span className="text-sm text-gray-500">Qualifications:</span>
+						<ul className="text-xs text-gray-700">
+							{doctor.qualifications.map((qual, index) => (
+								<li key={index}>
+									{qual.degree} ({qual.university}, {qual.year})
+								</li>
+							))}
+						</ul>
 					</div>
 				)}
 			</div>
 		</div>
-	</div>
-));
+	);
+};
+
+// Memoized version to prevent unnecessary re-renders
+// const DoctorCardMemo = React.memo(DoctorCard);
 
 const TimeSlot = memo(({ slot, isSelected, onClick }) => (
 	<button
@@ -207,10 +261,13 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 				email: JSON.parse(localStorage.getItem("user")).email,
 				phone: "4835487234", // Should come from user profile
 			});
-      console.log(paymentResponse)
+			console.log(paymentResponse);
 
 			// 2. Only proceed if payment was successful
 			if (paymentResponse.success) {
+				const url = generateMeetingUrl(paymentResponse.paymentId);
+				console.log(url);
+				// navigate(`/room/${url}`)
 				const token = localStorage.getItem("token");
 				const response = await axios.post(
 					"http://localhost:5000/api/appointments/book-appointment",
@@ -218,7 +275,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 						...appointmentData,
 						status: "confirmed",
 						paymentId: paymentResponse.paymentId,
-						meetingUrl: "https:google.com", // Implement this function
+						meetingUrl: url, // Implement this function
 					},
 					{
 						headers: {
@@ -228,7 +285,10 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 					}
 				);
 
-				if (onSuccess) onSuccess(response.data);
+				if (onSuccess) {
+          onSuccess(response.data);
+          navigate("/patient-dashboard/appointments");
+        }
 			}
 		} catch (err) {
 			const errorMessage =
@@ -239,6 +299,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 			console.error("Booking error:", err);
 		} finally {
 			setLoadingBooking(false);
+      navigate("/patient-dashboard/appointments");
 		}
 	};
 
@@ -308,7 +369,7 @@ const BookAppointment = ({ onClose, onSuccess }) => {
 						<p className="text-gray-500">No doctors found</p>
 					</div>
 				) : (
-					<div className="space-y-4">
+					<div className="space-y-4 grid grid-cols-2 gap-4">
 						{doctors.map((doctor) => (
 							<DoctorItem
 								key={doctor._id}

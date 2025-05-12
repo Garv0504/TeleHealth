@@ -20,6 +20,7 @@ import BookAppointment from "./Components/PatientDashboard/pages/Appointments/Bo
 import DoctorAppointments from "./Components/DoctorDashboard/pages/DoctorAppointments";
 import DocDashboardLayout from "./Components/DoctorDashboard/DocDashboardLayout";
 import ManageSlots from "./Components/DoctorDashboard/pages/ManageSlots";
+import VideoCall from "./Components/PatientDashboard/pages/VideoCall";
 
 function App() {
 	return (
@@ -47,6 +48,7 @@ function App() {
 				<Route path="manage-slots" element={<ManageSlots />} />
 				<Route path="appointments" element={<DoctorAppointments />} />
 			</Route>
+			<Route path="/room/:roomId" element={<VideoCall/>}/>
 		</Routes>
 	);
 }

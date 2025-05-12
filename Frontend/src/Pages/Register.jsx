@@ -67,7 +67,7 @@ const Register = () => {
             </div>
           )}
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <p>Are you a doctor ? <Link to="/doctor-register">Doc</Link></p>
+            <p>Are you a doctor ? <Link to="/doctor-register" className='text-blue-600 hover:text-blue-500'>Doctor</Link></p>
             <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
               <div>
                 <label
